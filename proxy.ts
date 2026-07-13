@@ -14,27 +14,6 @@ for (const orgSlug in orgs) {
   }
 }
 
-function getHostPort(host: string): string {
-  const port = host.split(":")[1];
-  return port && /^\d+$/.test(port) ? port : "";
-}
-
-function withRequestPort(targetHost: string, requestHost: string): string {
-  const requestPort = getHostPort(requestHost);
-  if (!requestPort || getHostPort(targetHost)) return targetHost;
-  return `${targetHost}:${requestPort}`;
-}
-
-function isLocalHost(host: string): boolean {
-  const hostname = host.split(":")[0];
-  return (
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname === "::1" ||
-    hostname.endsWith(".localhost")
-  );
-}
-
 export function proxy(req: NextRequest) {
   const url = req.nextUrl.clone();
   
@@ -43,7 +22,7 @@ export function proxy(req: NextRequest) {
   
   // Extract the domain without port for lookup, or use full hostname if you mapped port in config
   // Here we strip the port if it's there
-  let currentHost = hostname.split(":")[0];
+  const currentHost = hostname.split(":")[0];
   
   // Special case for local testing, e.g. orgName.localhost
   // We allow exact host match in domainToOrgSlugMap
@@ -72,28 +51,9 @@ export function proxy(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  // 2. Security/Tenant Isolation: If we are on the BASE domain (no orgSlug matched),
-  // but the user is trying to access /[tenant] directly in the URL:
-  // We forbid/redirect it to enforce subdomain-only access.
-  const pathParts = url.pathname.split("/").filter(Boolean);
-  const potentialOrgSlug = pathParts[0];
-
-  if (potentialOrgSlug && orgs[potentialOrgSlug] && isLocalHost(hostname)) {
-    // If localhost:3000/orgName is hit, we redirect to the specialized subdomain
-    const org = orgs[potentialOrgSlug];
-    const targetDomain = withRequestPort(
-      org.domains?.[0] || `${potentialOrgSlug}.localhost`,
-      hostname,
-    );
-    
-    // Redirect /orgName/personal -> orgName.localhost:3000/personal
-    const newPath = url.pathname.replace(`/${potentialOrgSlug}`, "") || "/";
-    // Construct the full URL preserving the protocol (http/https)
-    const protocol = req.nextUrl.protocol;
-    const redirectUrl = new URL(newPath, `${protocol}//${targetDomain}`);
-    return NextResponse.redirect(redirectUrl);
-  }
-
+  // Keep path-based tenant routes on the current host, e.g.
+  // /cosmos/apply/personal-loan-new should remain on localhost, Vercel previews,
+  // or any deployed URL instead of redirecting to cosmos.localhost.
   return NextResponse.next();
 }
 

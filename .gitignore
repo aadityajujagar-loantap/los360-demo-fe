@@ -20,6 +20,8 @@ promp*
 # production
 /build
 
+/temp*
+
 # misc
 .DS_Store
 *.pem

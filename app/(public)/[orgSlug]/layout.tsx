@@ -44,13 +44,13 @@ export default function OrgLayout({ children }: { children: React.ReactNode }) {
       {/* ── Sticky Org Navbar (hidden on journey routes) ── */}
       {!isJourneyRoute && nav && (
         <header className="shrink-0 bg-white border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[72px]">
+          <div className={`max-w-7xl mx-auto px-6 flex items-center justify-between ${isLoginPage ? "h-16" : "h-[72px]"}`}>
             {/* Logo */}
             <Link href={`/${orgSlug}`} className="flex items-center gap-3 shrink-0">
               <img
                 src="/assets/iFlow.png"
                 alt="iFlow"
-                className="h-14 w-auto max-w-[230px] object-contain"
+                className={`${isLoginPage ? "h-11" : "h-14"} w-auto max-w-[230px] object-contain`}
               />
             </Link>
 

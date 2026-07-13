@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Eye, EyeOff, Lock, ShieldCheck, UserRound, Workflow } from "lucide-react";
+import { Eye, EyeOff, Lock, UserRound, Workflow } from "lucide-react";
 import { orgs } from "@/app/_config/orgs";
 import { loginUser } from "@/app/_lib/redux/services/adminApi";
 
@@ -96,13 +96,13 @@ export default function OrgLoginPage() {
   const logoAlt = "iFlow";
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-4 lg:p-6">
-      <div className="grid min-h-[calc(100vh-2rem)] overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white shadow-sm lg:min-h-[calc(100vh-3rem)] lg:grid-cols-[minmax(420px,0.95fr)_minmax(440px,1.05fr)]">
+    <div className="h-full bg-[#F8FAFC] p-3 sm:p-4 lg:px-6 lg:py-5">
+      <div className="grid h-full min-h-0 overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white shadow-sm lg:grid-cols-[minmax(420px,0.95fr)_minmax(440px,1.05fr)]">
         <div
           className="hidden min-h-0 flex-col justify-center gap-7 overflow-hidden bg-[#111827] p-8 text-white lg:flex xl:p-10"
           style={{ background: `linear-gradient(145deg, ${accent} 0%, #111827 58%, #0F172A 100%)` }}
         >
-          <div>
+          <div className="lg:-translate-y-6 xl:-translate-y-8">
             <div className="max-w-md">
               <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/10">
                 <Workflow className="h-5 w-5 text-white" />
@@ -117,17 +117,17 @@ export default function OrgLoginPage() {
           </div>
         </div>
 
-        <div className="flex min-h-0 items-center justify-center bg-[#F8FAFC] p-5 sm:p-8 lg:p-10">
-          <div className="w-full max-w-[430px]">
-            <div className="mb-8 flex flex-col items-center text-center lg:hidden">
+        <div className="flex min-h-0 items-center justify-center bg-[#F8FAFC] p-4 sm:p-6 lg:p-8">
+          <div className="w-full max-w-[410px] lg:-translate-y-6 xl:-translate-y-8">
+            <div className="mb-5 flex flex-col items-center text-center lg:hidden">
               <img src={logoSrc} alt={logoAlt} className="mb-5 h-14 w-auto max-w-[220px] object-contain" />
               <h1 className="text-xl font-extrabold leading-none text-[#111827]">Admin Login</h1>
             </div>
 
-            <div className="rounded-2xl border border-[#E2E8F0] bg-white p-6 shadow-sm sm:p-8">
-              <div className="mb-7">
-                <div className="mb-4 hidden lg:block">
-                  <img src={logoSrc} alt={logoAlt} className="h-16 w-auto max-w-[240px] object-contain" />
+            <div className="rounded-xl border border-[#E2E8F0] bg-white p-5 shadow-sm sm:p-6">
+              <div className="mb-5">
+                <div className="mb-3 hidden lg:block">
+                  <img src={logoSrc} alt={logoAlt} className="h-12 w-auto max-w-[210px] object-contain" />
                 </div>
                 <h1 className="text-2xl font-extrabold tracking-tight text-[#111827]">Sign in</h1>
                 <p className="mt-1.5 text-xs font-semibold text-[#64748B]">
@@ -138,7 +138,7 @@ export default function OrgLoginPage() {
                 </p>
               </div>
 
-              <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
+              <form onSubmit={handleLogin} className="space-y-3.5" autoComplete="off">
                 <div>
                   <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-wide text-[#64748B]">
                     Username
@@ -215,7 +215,7 @@ export default function OrgLoginPage() {
               </form>
             </div>
 
-            <p className="mt-5 text-center text-[10px] font-bold uppercase tracking-wide text-[#94A3B8]">
+            <p className="mt-4 text-center text-[10px] font-bold uppercase tracking-wide text-[#94A3B8]">
               iFlow secure loan operations
             </p>
           </div>
