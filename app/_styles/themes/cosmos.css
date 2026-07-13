@@ -1,0 +1,30 @@
+/* ─────────────────────────────────────────────────────────────
+   Cosmos Bank — Brand Token Overrides
+   These are injected at :root so they apply globally for the
+   cosmos org slug. useOrgTheme.ts also sets these at runtime.
+───────────────────────────────────────────────────────────── */
+:root {
+  /* Cosmos Brand Colors (Modified to Blue variations) */
+  --cosmos-orange: #2e3192; /* Previously orange */
+  --cosmos-blue: #2e3192;
+  --cosmos-blue-dark: #1a1c54;
+  --cosmos-white: #ffffff;
+
+  /* ── Resolved Journey UI Tokens ── */
+  --primary: #2e3192;
+  --primary-dark: #1a1c54;
+  --primary-light: #f0f4ff;
+  --accent: #2e3192;
+  --accent-light: #eef2ff;
+
+  /* ── Button token ── */
+  --btn-primary: var(--primary);
+
+  /* ── Legacy sidebar tokens (admin/protected routes) ── */
+  --sidebar-bg: var(--cosmos-blue);
+  --sidebar-footer: var(--cosmos-blue-dark);
+  --sidebar-text: var(--cosmos-white);
+  --sidebar-text-muted: rgba(255, 255, 255, 0.65);
+  --step-active-bg: var(--cosmos-white);
+  --step-active-text: var(--cosmos-blue);
+}

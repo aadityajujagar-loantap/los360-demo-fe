@@ -1,0 +1,265 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import "tailwindcss";
+
+/* ─── Force light mode — Banking apps should never invert ─── */
+:root {
+  color-scheme: light only;
+
+  /* ── Cosmos Official Brand Colors (UI/Buttons) ── */
+  --primary: #2e3192; 
+  --primary-dark: #1a1c54; 
+  --primary-light: #f0f4ff; 
+  --accent: #2e3192; 
+  --accent-dark: #0f113a; 
+  --accent-light: #eef2ff; 
+  
+  /* ── Journey Progress Bar (Specific Sky Blue from Logo) ── */
+  --progress-sky: #299ad0;
+  --progress-sky-dark: #1b78a3;
+  --progress-sky-light: #eaf6fb;
+
+  /* ── Surface ── */
+  --background: #f5f5f5;
+  --surface: #ffffff;
+  --surface-2: #f9f9f9;
+  --surface-3: #f0f0f0;
+  --border: #e0e0e0;
+  --foreground: #111827;
+
+  /* ── Text ── */
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --text-inverse: #ffffff;
+
+  /* ── Status ── */
+  --success: #16a34a;
+  --success-light: #f0fdf4;
+  --error: #dc2626;
+  --error-light: #fef2f2;
+  --warning: #d97706;
+  --warning-light: #fffbeb;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ─── Global Reset & Base ─────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* ─── Custom Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Hide scrollbar utility for horizontal pill tabs */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom scrollbar for journey scroll area */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+
+/* ─── Journey page background ─────────────────────────────── */
+.journey-bg {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* ─── Glass Card ──────────────────────────────────────────── */
+.glass-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: var(--shadow-md);
+}
+
+/* ─── Animate utilities ────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-slide-up {
+  animation: fadeSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ─── Tailwind-animate compatibility layer ────────────────── */
+.animate-in {
+  animation-fill-mode: both;
+  animation-duration: 280ms;
+}
+.animate-out {
+  animation-fill-mode: both;
+  animation-duration: 280ms;
+}
+
+.duration-150 {
+  animation-duration: 150ms;
+}
+.duration-200 {
+  animation-duration: 200ms;
+}
+.duration-300 {
+  animation-duration: 300ms;
+}
+.duration-400 {
+  animation-duration: 400ms;
+}
+.duration-500 {
+  animation-duration: 500ms;
+}
+
+@keyframes _fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes _fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.animate-in.fade-in {
+  animation-name: _fadeIn;
+}
+.animate-out.fade-out {
+  animation-name: _fadeOut;
+}
+
+@keyframes _slideInFromTop2 {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes _slideInFromTop4 {
+  from {
+    transform: translateY(-16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes _slideInFromBottom2 {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes _slideInFromBottom4 {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes _slideInFromRight2 {
+  from {
+    transform: translateX(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-in.slide-in-from-top-2 {
+  animation-name: _slideInFromTop2;
+}
+.animate-in.slide-in-from-top-4 {
+  animation-name: _slideInFromTop4;
+}
+.animate-in.slide-in-from-bottom-2 {
+  animation-name: _slideInFromBottom2;
+}
+.animate-in.slide-in-from-bottom-4 {
+  animation-name: _slideInFromBottom4;
+}
+.animate-in.slide-in-from-right-2 {
+  animation-name: _slideInFromRight2;
+}

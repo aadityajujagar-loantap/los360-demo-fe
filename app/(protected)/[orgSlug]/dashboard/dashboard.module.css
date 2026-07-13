@@ -1,0 +1,495 @@
+/* ── Period Select ─────────────────────────────────────────────────────────── */
+
+.periodSelect {
+  padding: 10px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.periodSelect:hover {
+  border-color: #cbd5e1;
+}
+
+.periodSelect:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* ── Charts Container ──────────────────────────────────────────────────────── */
+
+.chartsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 0 32px;
+  margin-bottom: 24px;
+}
+
+.chartCard {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.chartTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px 0;
+}
+
+.chartLegend {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.legendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* ── Line Chart ────────────────────────────────────────────────────────────── */
+
+.lineChartContainer {
+  width: 100%;
+  height: 300px;
+}
+
+.lineChartSvg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Donut Chart ───────────────────────────────────────────────────────────── */
+
+.donutChartContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 0;
+}
+
+.donutSvg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
+}
+
+.donutSegment {
+  transition: opacity 0.2s;
+}
+
+.donutSegment:hover {
+  opacity: 0.85;
+}
+
+.donutCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.donutCenterValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.donutCenterLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.donutLegend {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+}
+
+.donutLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.donutLegendDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.donutLegendInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.donutLegendStatus {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.donutLegendStats {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.donutLegendStats span {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+/* ── Table Section ─────────────────────────────────────────────────────────── */
+
+.tableSection {
+  padding: 0 32px;
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 12px 0;
+}
+
+.tableCard {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.rankBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 28px;
+  padding: 0 8px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.conversionBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #dcfce7;
+  color: #15803d;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.progressBar {
+  background: #f1f5f9;
+  border-radius: 6px;
+  height: 24px;
+  width: 100%;
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.progressFill {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: width 0.6s ease;
+  min-width: fit-content;
+  padding-left: 8px;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1200px) {
+  .chartsContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .donutLegend {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .chartsContainer,
+  .tableSection {
+    padding: 0 16px;
+  }
+
+  .chartCard {
+    padding: 16px;
+  }
+
+  .donutChartContainer {
+    padding: 10px 0;
+  }
+
+  .progressBar {
+    max-width: 150px;
+  }
+}
+
+/* iFlow dashboard spacing and graph revamp */
+.periodSelect {
+  height: 2.25rem;
+  padding: 0 0.85rem;
+  border-color: #e2e8f0;
+  border-radius: 0.625rem;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.periodSelect:focus {
+  border-color: #5f39f8;
+  box-shadow: 0 0 0 3px rgba(95, 57, 248, 0.1);
+}
+
+.totalStatWrap,
+.statusSection,
+.chartsContainer,
+.tableSection {
+  padding: 0.25rem;
+  margin: 0;
+}
+
+.totalStatWrap {
+  display: grid;
+  grid-template-columns: minmax(220px, 360px);
+}
+
+.statusSection {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.625rem;
+}
+
+.chartsContainer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+  gap: 0.625rem;
+}
+
+.chartCard,
+.tableCard {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.chartCard {
+  min-height: 360px;
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartTitle,
+.sectionTitle {
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.chartTitle {
+  margin: 0 0 0.6rem;
+}
+
+.sectionTitle {
+  margin: 0 0 0.5rem;
+}
+
+.chartLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.legendItem {
+  gap: 0.45rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #f8fafc;
+  padding: 0.3rem 0.55rem;
+  color: #475569;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.legendDot {
+  width: 0.45rem;
+  height: 0.45rem;
+}
+
+.lineChartContainer {
+  min-height: 270px;
+  flex: 1;
+  border-radius: 0.75rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.lineChartSvg {
+  overflow: visible;
+}
+
+.donutChartContainer {
+  height: 100%;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.4rem 0 0;
+}
+
+.donutSvg {
+  filter: drop-shadow(0 12px 24px rgba(15, 23, 42, 0.08));
+}
+
+.donutSegment {
+  transition: opacity 0.2s, stroke-width 0.2s;
+}
+
+.donutSegment:hover {
+  opacity: 0.92;
+  stroke-width: 38px;
+}
+
+.donutCenterValue {
+  color: #111827;
+  font-size: 1.55rem;
+  font-weight: 900;
+}
+
+.donutCenterLabel {
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.donutLegend {
+  width: 100%;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.donutLegendItem {
+  justify-content: space-between;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.625rem;
+  background: #f8fafc;
+  padding: 0.5rem 0.6rem;
+}
+
+.donutLegendStatus {
+  color: #334155;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.donutLegendStats {
+  color: #111827;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.tableSection {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.rankBadge,
+.conversionBadge {
+  border-radius: 0.5rem;
+  font-size: 0.7rem;
+}
+
+.rankBadge {
+  min-width: 1.85rem;
+  height: 1.6rem;
+  background: #f5f3ff;
+  color: #5f39f8;
+}
+
+.progressBar {
+  height: 1.3rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+}
+
+.progressFill {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #5f39f8, #10b981);
+  font-size: 0.65rem;
+  font-weight: 900;
+}
+
+@media (max-width: 1200px) {
+  .chartsContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .chartsContainer,
+  .tableSection,
+  .statusSection,
+  .totalStatWrap {
+    padding: 0.25rem;
+  }
+
+  .chartCard {
+    min-height: auto;
+    padding: 0.75rem;
+  }
+
+  .totalStatWrap {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,151 @@
+.loginWrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc; /* Modern light gray/blue */
+}
+
+.formPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.formCard {
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 440px;
+}
+
+.formTitle {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+  text-align: center;
+}
+
+.formSubtitle {
+  color: #64748b;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup {
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.inputField {
+  width: 100%;
+  padding: 0.875rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  color: #334155;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.inputError {
+  border-color: #ef4444 !important;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.fieldErrorMsg {
+  color: #ef4444;
+  font-size: 0.8125rem;
+  margin-top: 0.25rem;
+  margin-left: 0.125rem;
+}
+
+.errorMsg {
+  color: #ef4444;
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.loginBtn {
+  width: 100%;
+  padding: 0.875rem;
+  background-color: #7c3aed;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 0.5rem;
+}
+
+.loginBtn:hover {
+  background-color: #6d28d9;
+}
+
+.loginBtn:disabled {
+  background-color: #c4b5fd;
+  cursor: not-allowed;
+}
+
+.fieldErrorContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 0.25rem;
+}
+
+.inlineLink {
+  color: #6366f1;
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.inlineLink:hover {
+  color: #4f46e5;
+}
+
+.footerText {
+  margin-top: 2rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9375rem;
+}
+
+.footerLink {
+  color: #7c3aed;
+  font-weight: 600;
+  text-decoration: underline;
+  margin-left: 0.25rem;
+}
+
+.footerLink:hover {
+  color: #6d28d9;
+}
