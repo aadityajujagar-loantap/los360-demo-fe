@@ -1,0 +1,19 @@
+<svg width="160" height="38" viewBox="0 0 160 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="8" fill="#F06C6C" font-family="Arial, sans-serif" font-size="7" font-weight="700">BAD</text>
+  <text x="136" y="8" fill="#F06C6C" font-family="Arial, sans-serif" font-size="7" font-weight="700">GOOD</text>
+  <rect x="0" y="14" width="160" height="10" rx="5" fill="url(#barGradient)" />
+  <path d="M58 14V24" stroke="white" stroke-opacity="0.7" />
+  <path d="M101 14V24" stroke="white" stroke-opacity="0.7" />
+  <text x="0" y="36" fill="#CDD4DF" font-family="Arial, sans-serif" font-size="6" font-weight="700">300</text>
+  <text x="53" y="36" fill="#CDD4DF" font-family="Arial, sans-serif" font-size="6" font-weight="700">550</text>
+  <text x="97" y="36" fill="#CDD4DF" font-family="Arial, sans-serif" font-size="6" font-weight="700">750</text>
+  <text x="148" y="36" fill="#CDD4DF" font-family="Arial, sans-serif" font-size="6" font-weight="700">850</text>
+  <defs>
+    <linearGradient id="barGradient" x1="0" y1="19" x2="160" y2="19" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD5D2" />
+      <stop offset="0.35" stop-color="#FFB4AF" />
+      <stop offset="0.66" stop-color="#FF938C" />
+      <stop offset="1" stop-color="#FF6860" />
+    </linearGradient>
+  </defs>
+</svg>

@@ -9,7 +9,7 @@ import EquifaxReportFull from "@/app/_components/ui/EquifaxReportFull";
 import { Download, UploadCloud, Eye, ChevronRight, User, AlertCircle, FileText, Activity, ShieldCheck, Search, MapPin, Phone, Mail, Award, CheckCircle2, ChevronDown, ChevronUp, Copy, ExternalLink, CreditCard, Mars, Venus, RefreshCw, Link as LinkIcon, Calendar, Building2, FileEdit, Heart, Briefcase, Landmark, Wallet, Receipt, TrendingDown, PieChart, Lock, Filter, MessageSquare, MessageCircle, Globe, ArrowUpRight, ArrowDownLeft, Send, Trash2 } from "lucide-react";
 import { load as loadCashfreeSDK } from "@cashfreepayments/cashfree-js";
 
-type Tab = "Overview" | "Customer Profile" | "Personal Details" | "Contact & Address" | "Co-Applicants" | "Documents" | "Upload Documents" | "Identity & KYC" | "Employment / Business" | "Financial Profile" | "Banking Details" | "Bureau" | "Fraud & Compliance" | "Audit Trail" | "Notes" | "Communication" | "Status History" | "Decision" | "Audit / Logs" | "CBS APIs" | "NACH" | "Equifax";
+type Tab = "Overview" | "Customer Profile" | "Contact & Address" | "Co-Applicants" | "Documents" | "Upload Documents" | "Identity & KYC" | "Employment / Business" | "Financial Profile" | "Banking Details" | "Bureau" | "Fraud & Compliance" | "Audit Trail" | "Notes" | "Communication" | "Status History" | "Decision" | "Audit / Logs" | "CBS APIs" | "NACH" | "Equifax";
 
 const STATUS_CLASSES: Record<string, string> = {
   submitted: "bg-[var(--primary-light,#f0f4ff)] text-[var(--primary,#2e3192)] border border-[var(--primary,#2e3192)]/20",
@@ -976,7 +976,7 @@ export default function ApplicationDetailsPage() {
 
   const renderSubTabs = () => {
     const allNavigationTabs: Tab[] = ([
-      "Overview", "Personal Details", "Contact & Address", "Co-Applicants", "Documents",
+      "Overview", "Contact & Address", "Co-Applicants", "Documents",
       "Identity & KYC", "Employment / Business", "Financial Profile", "Banking Details",
       "Bureau", "Fraud & Compliance", "Audit Trail", "Notes", "Communication",
       "NACH", "Equifax", "CBS APIs", "Status History", "Decision", "Audit / Logs"
@@ -1165,25 +1165,45 @@ export default function ApplicationDetailsPage() {
 
       {(() => {
         const allNavigationTabs: Tab[] = [
-          "Overview", "Customer Profile", "Personal Details", "Contact & Address", "Identity & KYC",
+          "Overview", "Customer Profile", "Contact & Address", "Identity & KYC",
           "Employment / Business", "Financial Profile", "Banking Details", "Co-Applicants", "Documents",
           "Bureau", "Fraud & Compliance", "Audit Trail", "Notes", "Communication",
           "NACH", "Equifax", "CBS APIs", "Status History", "Decision", "Audit / Logs"
         ];
-        const getVisibleCount = (width: number) => {
-          if (width < 640) return 2;
-          if (width < 900) return 3;
-          if (width < 1180) return 5;
-          return 7;
+        const estimateTopTabWidth = (tab: Tab) => {
+          const textWidth = tab.length * 7.4;
+          return Math.min(195, Math.max(68, textWidth + 32));
         };
-        const visibleCount = getVisibleCount(windowWidth);
+        const tabRowGap = windowWidth >= 1280 ? 32 : windowWidth >= 640 ? 24 : 16;
+        const tabToggleReserve = 112 + tabRowGap + 14;
+        const getVisibleCount = () => {
+          const measuredWidth = subTabsBarWidth || windowWidth;
+          const horizontalPadding = windowWidth >= 1280 ? 64 : windowWidth >= 1024 ? 48 : 32;
+          const availableWidth = Math.max(240, measuredWidth - horizontalPadding);
+          let usedWidth = 0;
+
+          for (let index = 0; index < allNavigationTabs.length; index += 1) {
+            const remainingTabs = allNavigationTabs.length - index - 1;
+            const tabWidth = estimateTopTabWidth(allNavigationTabs[index]);
+            const gapWidth = index > 0 ? tabRowGap : 0;
+            const reserveForShowMore = remainingTabs > 0 ? tabToggleReserve : 0;
+
+            if (usedWidth + gapWidth + tabWidth + reserveForShowMore > availableWidth) {
+              return Math.max(1, index);
+            }
+
+            usedWidth += gapWidth + tabWidth;
+          }
+
+          return allNavigationTabs.length;
+        };
+        const visibleCount = getVisibleCount();
         const primaryTabs = allNavigationTabs.slice(0, visibleCount);
         const dropdownTabs = allNavigationTabs.slice(visibleCount);
-        const isDropdownActive = dropdownTabs.includes(activeTab);
+        const isOverflowActive = dropdownTabs.includes(activeTab);
         const tabIcons: Partial<Record<Tab, React.ReactNode>> = {
           "Overview": <Activity size={13} />,
           "Customer Profile": <User size={13} />,
-          "Personal Details": <User size={13} />,
           "Contact & Address": <MapPin size={13} />,
           "Identity & KYC": <ShieldCheck size={13} />,
           "Employment / Business": <Briefcase size={13} />,
@@ -1191,61 +1211,113 @@ export default function ApplicationDetailsPage() {
           "Banking Details": <Landmark size={13} />,
           "Co-Applicants": <User size={13} />,
           "Documents": <FileText size={13} />,
+          "Bureau": <CreditCard size={13} />,
+          "Fraud & Compliance": <ShieldCheck size={13} />,
+          "Audit Trail": <Activity size={13} />,
+          "Notes": <MessageSquare size={13} />,
+          "Communication": <MessageCircle size={13} />,
+          "NACH": <Receipt size={13} />,
+          "Equifax": <CreditCard size={13} />,
+          "CBS APIs": <Globe size={13} />,
+          "Status History": <RefreshCw size={13} />,
+          "Decision": <CheckCircle2 size={13} />,
+          "Audit / Logs": <FileText size={13} />,
         };
+        const overflowRows = (() => {
+          const measuredWidth = subTabsBarWidth || windowWidth;
+          const horizontalPadding = windowWidth >= 1280 ? 64 : windowWidth >= 1024 ? 48 : 32;
+          const rowGap = tabRowGap;
+          const overflowRightReserve = tabToggleReserve;
+          const availableWidth = Math.max(190, measuredWidth - horizontalPadding - overflowRightReserve);
+          const rows: Tab[][] = [];
+          let currentRow: Tab[] = [];
+          let usedWidth = 0;
+
+          dropdownTabs.forEach((tab) => {
+            const gapWidth = currentRow.length > 0 ? rowGap : 0;
+            const tabWidth = estimateTopTabWidth(tab);
+
+            if (currentRow.length > 0 && usedWidth + gapWidth + tabWidth > availableWidth) {
+              rows.push(currentRow);
+              currentRow = [tab];
+              usedWidth = tabWidth;
+              return;
+            }
+
+            currentRow.push(tab);
+            usedWidth += gapWidth + tabWidth;
+          });
+
+          if (currentRow.length > 0) rows.push(currentRow);
+          return rows;
+        })();
+        const overflowRowRightReserve = tabToggleReserve;
 
         return (
-          <div className="sticky top-0 z-30 -mx-2.5 mb-2.5 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 lg:-mx-3 lg:px-6 xl:-mx-4 xl:px-8 overflow-visible">
-            <div className="flex h-12 items-center gap-4 sm:gap-6 xl:gap-8 overflow-visible">
-              {primaryTabs.map((tab) => {
-                const isActive = activeTab === tab;
-                return (
-                  <button
-                    key={tab}
-                    onClick={() => {
-                      setActiveTab(tab);
-                      setIsMoreTabOpen(false);
-                    }}
-                    className={`relative inline-flex h-full shrink-0 items-center gap-2 text-[12px] font-extrabold transition-all cursor-pointer ${isActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
-                  >
-                    <span className={isActive ? "text-[#5F39F8]" : "text-[#64748B]"}>{tabIcons[tab]}</span>
-                    <span>{tab}</span>
-                    {isActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[#5F39F8]" />}
-                  </button>
-                );
-              })}
+          <div ref={subTabsContainerRef} className="sticky top-0 z-30 -mx-2.5 mb-2.5 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 lg:-mx-3 lg:px-6 xl:-mx-4 xl:px-8 overflow-visible">
+            <div className="relative h-12 overflow-visible">
+              <div
+                className="flex h-12 items-center gap-4 overflow-visible sm:gap-6 xl:gap-8"
+                style={dropdownTabs.length > 0 ? { width: `calc(100% - ${overflowRowRightReserve}px)` } : undefined}
+              >
+                {primaryTabs.map((tab) => {
+                  const isActive = activeTab === tab;
+                  return (
+                    <button
+                      key={tab}
+                      onClick={() => {
+                        setActiveTab(tab);
+                        setIsMoreTabOpen(false);
+                      }}
+                      className={`relative inline-flex h-full shrink-0 items-center gap-2 whitespace-nowrap text-[12px] font-extrabold transition-all cursor-pointer ${isActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
+                    >
+                      <span className={isActive ? "text-[#5F39F8]" : "text-[#64748B]"}>{tabIcons[tab]}</span>
+                      <span>{tab}</span>
+                      {isActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[#5F39F8]" />}
+                    </button>
+                  );
+                })}
+              </div>
 
               {dropdownTabs.length > 0 && (
-                <div className="relative ml-auto shrink-0">
-                  {isMoreTabOpen && (
-                    <div className="fixed inset-0 z-20 cursor-default bg-transparent" onClick={() => setIsMoreTabOpen(false)} />
-                  )}
+                <div className="absolute right-0 top-0 flex h-12 shrink-0 items-center">
                   <button
                     onClick={() => setIsMoreTabOpen(!isMoreTabOpen)}
-                    className={`relative z-30 inline-flex h-12 items-center gap-1 text-[12px] font-extrabold transition-all cursor-pointer ${isDropdownActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
+                    className={`relative inline-flex h-12 items-center gap-1 text-[12px] font-extrabold transition-all cursor-pointer ${isOverflowActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
                   >
-                    <span>{isDropdownActive ? activeTab : "More"}</span>
+                    <span>{isMoreTabOpen ? "Show Less" : "Show More"}</span>
                     <ChevronDown size={14} className={`transition-transform duration-200 ${isMoreTabOpen ? "rotate-180" : ""}`} />
-                    {isDropdownActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[#5F39F8]" />}
+                    {isOverflowActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[#5F39F8]" />}
                   </button>
-                  {isMoreTabOpen && (
-                    <div className="absolute top-full right-0 z-50 mt-1.5 max-h-[350px] w-56 overflow-y-auto rounded-lg border border-[#E2E8F0] bg-white py-1.5 shadow-lg animate-in fade-in slide-in-from-top-1 duration-150">
-                      {dropdownTabs.map((tab) => (
-                        <button
-                          key={tab}
-                          onClick={() => {
-                            setActiveTab(tab);
-                            setIsMoreTabOpen(false);
-                          }}
-                          className={`w-full px-4 py-2 text-left text-xs font-bold transition-all hover:bg-slate-50 cursor-pointer ${activeTab === tab ? "text-[#5F39F8] bg-indigo-50/30" : "text-slate-600 hover:text-slate-800"}`}
-                        >
-                          {tab}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               )}
             </div>
+            {isMoreTabOpen && dropdownTabs.length > 0 && (
+              <div className="animate-in fade-in slide-in-from-top-1 duration-150">
+                {overflowRows.map((row, rowIndex) => (
+                  <div
+                    key={row.join("-")}
+                    className="flex min-h-9 items-center gap-4 overflow-visible border-t border-[#E2E8F0] py-0.5 sm:gap-6 xl:gap-8"
+                    style={{ width: `calc(100% - ${overflowRowRightReserve}px)` }}
+                  >
+                    {row.map((tab) => {
+                      const isActive = activeTab === tab;
+                      return (
+                        <button
+                          key={`${rowIndex}-${tab}`}
+                          onClick={() => setActiveTab(tab)}
+                          className={`relative inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap text-[12px] font-extrabold transition-all cursor-pointer ${isActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
+                        >
+                          <span className={isActive ? "text-[#5F39F8]" : "text-[#64748B]"}>{tabIcons[tab]}</span>
+                          {tab}
+                          {isActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[#5F39F8]" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         );
       })()}
@@ -1257,34 +1329,39 @@ export default function ApplicationDetailsPage() {
             <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col items-center">
             {/* Applicant Profile Card */}
             {/* Illustrated Vector Cartoon Avatar matching mockup */}
-            <div className="w-20 h-20 rounded-full border-2 border-white shadow-md overflow-hidden flex items-center justify-center mb-3 select-none bg-slate-100">
-              <img 
-                src="/images/applicant_avatar.png" 
-                alt="Primary Applicant Avatar" 
-                className="w-full h-full object-cover"
-              />
+            <div className="relative mb-3 flex flex-col items-center select-none">
+              <div className="w-20 h-20 rounded-full border-2 border-white shadow-md overflow-hidden flex items-center justify-center bg-slate-100">
+                <img
+                  src="/images/applicant_avatar.png"
+                  alt="Primary Applicant Avatar"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="absolute -bottom-2 inline-flex h-5 min-w-[92px] items-center justify-center whitespace-nowrap rounded-md border border-[#C7D2FE] bg-[#EEF2FF] px-2 text-[10px] font-medium leading-none text-[#5F39F8] shadow-xs">
+                Primary Borrower
+              </span>
             </div>
 
-            <h2 className="text-base font-bold text-slate-800 text-center mb-3 truncate w-full" title={`${appData.first_name} ${appData.middle_name ? `${appData.middle_name} ` : ""}${appData.last_name}`}>
+            <h2 className="text-base font-bold text-slate-800 text-center mb-1 truncate w-full" title={`${appData.first_name} ${appData.middle_name ? `${appData.middle_name} ` : ""}${appData.last_name}`}>
               {appData.first_name} {appData.middle_name ? `${appData.middle_name} ` : ""}{appData.last_name}
             </h2>
 
             {/* Badges row: gender, age, marital status */}
-            <div className="flex flex-nowrap items-center justify-center gap-1 mb-4 w-full text-[9px] font-extrabold text-slate-500">
-              <span className="inline-flex min-w-0 items-center gap-1 bg-slate-50 border border-slate-150 px-1.5 py-0.5 rounded-md">
-                <User size={12} className="text-slate-400" />
+            <div className="flex flex-nowrap items-center justify-center gap-1 mb-4 w-full text-[9px] font-medium text-[#5F39F8]">
+              <span className="inline-flex h-5 min-w-0 items-center gap-1 rounded-md bg-[#EEF2FF] px-1.5 leading-none shadow-xs">
+                <User size={11} className="text-[#5F39F8]" />
                 <span className="whitespace-nowrap">{(() => {
                   const gender = (appData.gender || "").toLowerCase();
                   if (gender === "female" || gender === "f") return "Female";
                   return "Male";
                 })()}</span>
               </span>
-              <span className="inline-flex min-w-0 items-center gap-1 bg-slate-50 border border-slate-150 px-1.5 py-0.5 rounded-md">
-                <Calendar size={12} className="text-slate-400" />
+              <span className="inline-flex h-5 min-w-0 items-center gap-1 rounded-md bg-[#EEF2FF] px-1.5 leading-none shadow-xs">
+                <Calendar size={11} className="text-[#5F39F8]" />
                 <span className="whitespace-nowrap">32 Yrs</span>
               </span>
-              <span className="inline-flex min-w-0 items-center gap-1 bg-slate-50 border border-slate-150 px-1.5 py-0.5 rounded-md">
-                <Heart size={12} className="text-slate-400" />
+              <span className="inline-flex h-5 min-w-0 items-center gap-1 rounded-md bg-[#EEF2FF] px-1.5 leading-none shadow-xs">
+                <Heart size={11} className="text-[#5F39F8]" />
                 <span className="whitespace-nowrap">Married</span>
               </span>
             </div>
@@ -1329,74 +1406,128 @@ export default function ApplicationDetailsPage() {
               </div>
             </div>
             
-            <span className="mb-3 inline-flex w-full items-center justify-center rounded-full border border-[#E0E7FF] bg-[#EEF2FF] px-3 py-1 text-[10px] font-extrabold text-[#5F39F8] select-none">
-              PRIMARY APPLICANT
-            </span>
-
             <button className="w-full h-9 border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-xs">
               <span>View Customer 360</span>
               <ExternalLink size={12} className="text-[#94A3B8]" />
             </button>
           </div>
 
-            <div className="w-full rounded-[14px] border border-[#E1E6EE] bg-white px-5 pt-[17px] pb-4 shadow-[0_2px_8px_rgba(15,23,42,0.08)] flex flex-col items-center">
-              <h3 className="w-full text-center text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#111D36] mb-[14px]">
-                CIBIL SCORE
-              </h3>
+            {(() => {
+              const numericScore = Number(appData.score) || 0;
+              const progress = numericScore > 0 ? Math.min(numericScore / 850, 1) : 0;
+              const angle = -117 + progress * 234;
+              const bgPath =
+                "M98.8963 82.045C100.776 83.2256 103.27 82.6812 104.332 80.7328C108.394 73.2859 110.662 64.9942 110.934 56.5047C111.25 46.6824 108.882 36.9573 104.08 28.349C99.2776 19.7408 92.2177 12.5667 83.6403 7.57888C75.063 2.59107 65.2842 -0.0266551 55.3294 0.000204573C45.3745 0.0270642 35.6104 2.69752 27.0608 7.73154C18.5112 12.7656 11.4911 19.9777 6.73665 28.6117C1.9822 37.2457 -0.331458 46.9835 0.038281 56.8039C0.357856 65.292 2.67192 73.5716 6.77466 80.9967C7.84789 82.939 10.3446 83.4697 12.2172 82.279C14.1212 81.0683 14.6523 78.5425 13.5901 76.5519C10.292 70.3707 8.43112 63.5217 8.16697 56.5057C7.85144 48.125 9.82588 39.815 13.8833 32.4468C17.9406 25.0787 23.9315 18.924 31.2276 14.628C38.5237 10.332 46.8563 8.05311 55.3516 8.03019C63.8469 8.00727 72.192 10.2412 79.5118 14.4977C86.8316 18.7542 92.8564 24.8766 96.9545 32.2227C101.053 39.5688 103.073 47.8681 102.804 56.2503C102.579 63.2675 100.756 70.1264 97.492 76.3252C96.4408 78.3217 96.9857 80.8447 98.8963 82.045Z";
+              const meterColor = "#0089CF";
+              const reportDate = appData.cibil_report_date || appData.report_date || "2026-07-16";
+              const formattedReportDate = reportDate ? new Date(reportDate).toLocaleDateString("en-GB") : "-";
+              const { label, color } = getCibilScoreMeta(numericScore);
 
-              <div className="flex items-center justify-center w-full">
-                <svg viewBox="0 0 180 112" className="w-[152px] h-[100px]" aria-label="CIBIL score not reported">
-                  <path d="M 38 86 A 52 52 0 0 1 142 86" fill="none" stroke="#D8F0FB" strokeWidth="8.5" strokeLinecap="round" />
-                  <g stroke="#78BFE7" strokeWidth="1" strokeLinecap="round">
-                    <line x1="48.0" y1="86.0" x2="51.7" y2="86.0" />
-                    <line x1="50.7" y1="71.2" x2="54.3" y2="72.2" />
-                    <line x1="58.5" y1="58.2" x2="61.7" y2="60.1" />
-                    <line x1="70.5" y1="49.1" x2="72.4" y2="52.3" />
-                    <line x1="84.9" y1="44.5" x2="85.5" y2="48.1" />
-                    <line x1="100.1" y1="44.5" x2="99.5" y2="48.1" />
-                    <line x1="114.5" y1="49.1" x2="112.6" y2="52.3" />
-                    <line x1="126.5" y1="58.2" x2="123.3" y2="60.1" />
-                    <line x1="134.3" y1="71.2" x2="130.7" y2="72.2" />
-                    <line x1="137.0" y1="86.0" x2="133.3" y2="86.0" />
-                  </g>
-                  <line x1="42" y1="87" x2="90" y2="69" stroke="#138ED0" strokeWidth="1.8" strokeLinecap="round" />
-                  <circle cx="42" cy="87" r="4" fill="#078FCE" />
-                  <circle cx="90" cy="69" r="8.6" fill="#0A91CF" />
-                </svg>
-              </div>
+              return (
+                <div className="w-full rounded-xl border border-gray-200 bg-white px-3 py-4 mb-2 shadow-sm">
+                  <h3 className="text-xs font-bold text-gray-700 mb-1 text-center uppercase tracking-wider">
+                    CIBIL Score
+                  </h3>
 
-              <div className="-mt-[3px] text-[12px] font-extrabold text-[#475569]">Not Reported</div>
+                  <div className="relative flex flex-col items-center justify-center">
+                    <svg viewBox="0 0 111 83" className="w-[110px] my-1 overflow-visible" aria-label="CIBIL score meter">
+                      <path d={bgPath} fill="#D5ECF7" />
 
-              <div className="mt-[15px] w-[160px] max-w-full">
-                <div className="mb-1 flex justify-between px-1 text-[7px] font-bold uppercase tracking-[0.08em]">
-                  <span className="text-[#F06C6C]">Bad</span>
-                  <span className="text-[#F06C6C]">Good</span>
-                </div>
-                <div className="relative h-[38px]">
-                  <div className="absolute left-0 right-0 top-0 h-[9px] overflow-hidden rounded-full bg-[#FFD2CF]">
-                    <div className="h-full w-full bg-[linear-gradient(90deg,#FFD5D2_0%,#FFB4AF_35%,#FF938C_66%,#FF6860_100%)]" />
-                    <div className="absolute left-[37%] top-0 h-full w-px bg-white/70" />
-                    <div className="absolute left-[62%] top-0 h-full w-px bg-white/70" />
+                      <path
+                        pathLength="100"
+                        d="M 10.18 78.6 A 50.85 50.85 0 1 1 100.82 78.6"
+                        fill="none"
+                        stroke={meterColor}
+                        strokeWidth="8.3"
+                        strokeLinecap="round"
+                        strokeDasharray={`${progress * 100} 100`}
+                        style={{ transition: "stroke-dasharray 1s ease-out" }}
+                      />
+
+                      {Array.from({ length: 15 }).map((_, i) => {
+                        const tickAngle = -117 + (i / 14) * 234;
+                        const isMajor = i % 2 === 0;
+
+                        return (
+                          <line
+                            key={i}
+                            x1="55.5"
+                            y1={isMajor ? "13" : "14"}
+                            x2="55.5"
+                            y2="18"
+                            stroke="#0089CF"
+                            strokeWidth="0.5"
+                            transform={`rotate(${tickAngle}, 55.5, 55.5)`}
+                          />
+                        );
+                      })}
+
+                      <g transform={`rotate(${angle - 30.1}, 55.5, 55.5)`}>
+                        <g transform="translate(51.10, 24.9)">
+                          <path
+                            d="M22.1085 0.000280766L8.84942 33.1279L-0.000305079 28.0082L22.1085 0.000280766Z"
+                            fill="url(#needleGradient)"
+                          />
+                        </g>
+                      </g>
+
+                      <g transform="translate(46.5, 46.5)">
+                        <circle cx="8.5" cy="8.5" r="8.5" fill="#0089CF" />
+                      </g>
+
+                      <defs>
+                        <linearGradient
+                          id="needleGradient"
+                          x1="22.1085"
+                          y1="0"
+                          x2="4.42456"
+                          y2="30.568"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop stopColor="#0089CF" />
+                          <stop offset="1" stopColor="#0089CF" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+
+                    <div className="mt-1 text-center w-full">
+                      {numericScore > 0 ? (
+                        <>
+                          <p className="text-[11px] font-bold text-gray-800">
+                            Score:
+                            <span className="ml-1" style={{ color }}>
+                              {numericScore}
+                            </span>
+                          </p>
+                          <p className="text-[10px] font-bold" style={{ color }}>
+                            {label}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-[11px] font-bold text-gray-500">
+                          Not Reported
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <div className="absolute left-0 right-0 top-[19px] flex justify-between px-1 text-[6px] font-bold text-[#CDD4DF]">
-                    <span>300</span>
-                    <span>550</span>
-                    <span>750</span>
-                    <span>850</span>
+
+                  <div className="relative flex justify-center mt-3">
+                    <img src="/images/meterScoreCibil.svg" className="w-[160px]" alt="" />
+                  </div>
+
+                  <div className="flex flex-col items-center mt-0">
+                    <img src="/images/vantage.svg" alt="" className="mx-auto w-[150px] mb-1" />
+
+                    <div className="mt-1 border-t w-full pt-1 border-gray-100 flex justify-center items-center gap-1.5 text-[10px] text-gray-500 text-center">
+                      <span className="whitespace-nowrap uppercase tracking-tighter opacity-70">Report Date:</span>
+                      <span className="font-bold text-gray-700 whitespace-nowrap">
+                        {formattedReportDate}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-[2px] flex items-center justify-center gap-1.5 text-[9px] font-medium text-[#A1AABA]">
-                <span>Vantage Score 3.0 credit score by</span>
-                <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#0A91CF] text-[7px] font-black text-[#0A91CF]">TU</span>
-              </div>
-
-              <div className="mt-4 flex w-full items-center justify-center gap-2 border-t border-[#F0F3F7] pt-3">
-                <span className="text-[9px] font-medium uppercase text-[#AAB3C2]">REPORT DATE:</span>
-                <span className="text-[10px] font-extrabold text-[#0F1F3D]">16/07/2026</span>
-              </div>
-            </div>
+              );
+            })()}
 
             {/* CIBIL Score Card */}
             <div className="hidden">
@@ -1499,7 +1630,7 @@ export default function ApplicationDetailsPage() {
           {/* Tabs Navigation */}
           {false && (() => {
             const allNavigationTabs: Tab[] = [
-              "Overview", "Personal Details", "Contact & Address", "Co-Applicants", "Documents", 
+              "Overview", "Contact & Address", "Co-Applicants", "Documents", 
               "Identity & KYC", "Employment / Business", "Financial Profile", "Banking Details", 
               "Bureau", "Fraud & Compliance", "Audit Trail", "Notes", "Communication", 
               "NACH", "Equifax", "CBS APIs", "Status History", "Decision", "Audit / Logs"
@@ -1951,20 +2082,6 @@ export default function ApplicationDetailsPage() {
                     </div>
                   </div>
 
-                  <div className="mt-3 flex items-center gap-3 rounded-xl border border-slate-100 bg-[#F8FAFC] p-3">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-emerald-100 bg-emerald-50 text-emerald-500 shadow-xs">
-                      <CheckCircle2 size={24} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-extrabold text-[#1E293B]">No Duplicates Found</h4>
-                      <p className="mt-0.5 text-[10px] font-semibold leading-relaxed text-[#64748B]">
-                        No potential duplicate customers were found.
-                      </p>
-                    </div>
-                    <button className="h-8 shrink-0 rounded-lg border border-[#E2E8F0] bg-white px-3 text-[11px] font-bold text-slate-700 transition-all hover:bg-slate-50">
-                      View Details
-                    </button>
-                  </div>
                 </div>
 
                 {/* Customer 360 */}
@@ -2014,12 +2131,24 @@ export default function ApplicationDetailsPage() {
                         </div>
                         <UploadCloud size={20} className="text-[#5F39F8]" />
                       </div>
-                      <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg flex items-center justify-between col-span-2">
+                      <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg flex items-center justify-between">
                         <div>
                           <div className="text-[9px] text-[#64748B] font-bold uppercase tracking-wider">Last Interaction</div>
                           <div className="text-base font-extrabold text-[#1E293B] mt-1">15 May 2024</div>
                         </div>
                         <Calendar size={20} className="text-amber-500" />
+                      </div>
+                      <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg flex items-center justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className="text-[9px] text-[#64748B] font-bold uppercase tracking-wider">Duplicate Status</div>
+                          <div className="text-xs font-extrabold text-[#1E293B] mt-1 truncate">No Duplicates Found</div>
+                          <button className="mt-1.5 text-[10px] font-extrabold text-[#5F39F8] hover:text-[#4F2EE0] cursor-pointer">
+                            View Details
+                          </button>
+                        </div>
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
+                          <CheckCircle2 size={18} />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2249,10 +2378,102 @@ export default function ApplicationDetailsPage() {
                   </div>
                 </div>
               </div>
+
+              {/* 4. Loan & Income Details */}
+              <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <h3 className="text-sm font-bold text-[#1E293B]">Loan & Income Details</h3>
+                  <div className="flex items-center gap-4">
+                    <button className="inline-flex items-center gap-1 text-xs font-bold text-[#5F39F8] hover:text-[#4F2EE0] cursor-pointer bg-transparent border-none">
+                      <FileEdit size={13} />
+                      <span>Edit</span>
+                    </button>
+                    <button className="inline-flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-slate-600 cursor-pointer bg-transparent border-none">
+                      <Activity size={13} />
+                      <span>History</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 xl:gap-8 text-xs font-semibold">
+                  {[
+                    [
+                      { label: "Loan Product", value: appData.loan_product || "Home Loan" },
+                      { label: "Loan Scheme", value: appData.loan_scheme || "Standard" },
+                      { label: "Requested Amount", value: fmt(appData.loan_amount_requested) },
+                      { label: "Sanctioned Amount", value: fmt(appData.sanction_amount) },
+                    ],
+                    [
+                      { label: "Requested Tenure", value: appData.loan_period_requested || "240 Months" },
+                      { label: "Eligible Tenure", value: appData.eligible_tenure || "240 Months" },
+                      { label: "Interest Rate", value: appData.eligible_roi ? `${appData.eligible_roi}%` : "8.75%" },
+                      { label: "Monthly EMI", value: fmt(appData.eligible_emi) },
+                    ],
+                    [
+                      { label: "Avg Monthly Income", value: fmt(appData.avg_monthly_income) },
+                      { label: "Total Monthly Income", value: fmt(appData.total_monthly_income) },
+                      { label: "Monthly Deduction", value: fmt(appData.monthly_deduction) },
+                      { label: "Existing Obligations", value: fmt(appData.existing_monthly_obligations) },
+                    ],
+                  ].map((column, index) => (
+                    <div key={index} className="space-y-0.5">
+                      {column.map((field) => (
+                        <div key={field.label} className="flex justify-between items-center py-1.5 border-b border-slate-50 gap-4">
+                          <span className="text-[#94A3B8] font-medium">{field.label}</span>
+                          <span className="text-[#1E293B] font-bold text-right truncate max-w-[110px] xl:max-w-[145px]" title={String(field.value)}>{field.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 5. Work & Branch Details */}
+              <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <h3 className="text-sm font-bold text-[#1E293B]">Work & Branch Details</h3>
+                  <div className="flex items-center gap-4">
+                    <button className="inline-flex items-center gap-1 text-xs font-bold text-[#5F39F8] hover:text-[#4F2EE0] cursor-pointer bg-transparent border-none">
+                      <FileEdit size={13} />
+                      <span>Edit</span>
+                    </button>
+                    <button className="inline-flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-slate-600 cursor-pointer bg-transparent border-none">
+                      <Activity size={13} />
+                      <span>History</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 xl:gap-8 text-xs font-semibold">
+                  {[
+                    [
+                      { label: "Employer Name", value: appData.employer_name || "TCS Pvt. Ltd." },
+                      { label: "Work Email", value: appData.work_email || "-" },
+                    ],
+                    [
+                      { label: "Branch", value: appData.branch || "-" },
+                      { label: "District", value: appData.district || "-" },
+                    ],
+                    [
+                      { label: "State", value: appData.state || appData.current_state || "Maharashtra" },
+                      { label: "Account Number", value: appData.account_number || "-" },
+                    ],
+                  ].map((column, index) => (
+                    <div key={index} className="space-y-0.5">
+                      {column.map((field) => (
+                        <div key={field.label} className="flex justify-between items-center py-1.5 border-b border-slate-50 gap-4">
+                          <span className="text-[#94A3B8] font-medium">{field.label}</span>
+                          <span className="text-[#1E293B] font-bold text-right truncate max-w-[120px] xl:max-w-[170px]" title={String(field.value)}>{field.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
-          {activeTab === "Personal Details" && (
+          {false && (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 items-start">
 
               {/* Left Column (Address & Loan details with underline styled fields) */}
