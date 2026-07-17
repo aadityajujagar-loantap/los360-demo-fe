@@ -42,7 +42,7 @@ export default function OrgLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="h-screen overflow-hidden flex flex-col font-sans bg-gray-50">
       {/* ── Sticky Org Navbar (hidden on journey routes) ── */}
-      {!isJourneyRoute && nav && (
+      {!isJourneyRoute && !isLoginPage && nav && (
         <header className="shrink-0 bg-white border-b border-gray-100">
           <div className={`max-w-7xl mx-auto px-6 flex items-center justify-between ${isLoginPage ? "h-16" : "h-[72px]"}`}>
             {/* Logo */}

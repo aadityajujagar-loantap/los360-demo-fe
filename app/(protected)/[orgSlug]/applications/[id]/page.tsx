@@ -9,7 +9,7 @@ import EquifaxReportFull from "@/app/_components/ui/EquifaxReportFull";
 import { Download, UploadCloud, Eye, ChevronRight, User, AlertCircle, FileText, Activity, ShieldCheck, Search, MapPin, Phone, Mail, Award, CheckCircle2, ChevronDown, ChevronUp, Copy, ExternalLink, CreditCard, Mars, Venus, RefreshCw, Link as LinkIcon, Calendar, Building2, FileEdit, Heart, Briefcase, Landmark, Wallet, Receipt, TrendingDown, PieChart, Lock, Filter, MessageSquare, MessageCircle, Globe, ArrowUpRight, ArrowDownLeft, Send, Trash2 } from "lucide-react";
 import { load as loadCashfreeSDK } from "@cashfreepayments/cashfree-js";
 
-type Tab = "Overview" | "Customer Profile" | "Personal Information" | "Contact & Address" | "Co-Applicants" | "Documents" | "Upload Documents" | "Identity & KYC" | "Employment / Business" | "Financial Profile" | "Banking Details" | "Bureau" | "Fraud & Compliance" | "Audit Trail" | "Notes" | "Communication" | "Status History" | "Decision" | "Audit / Logs" | "CBS APIs" | "NACH" | "Equifax";
+type Tab = "Overview" | "Customer Profile" | "Personal Details" | "Contact & Address" | "Co-Applicants" | "Documents" | "Upload Documents" | "Identity & KYC" | "Employment / Business" | "Financial Profile" | "Banking Details" | "Bureau" | "Fraud & Compliance" | "Audit Trail" | "Notes" | "Communication" | "Status History" | "Decision" | "Audit / Logs" | "CBS APIs" | "NACH" | "Equifax";
 
 const STATUS_CLASSES: Record<string, string> = {
   submitted: "bg-[var(--primary-light,#f0f4ff)] text-[var(--primary,#2e3192)] border border-[var(--primary,#2e3192)]/20",
@@ -976,7 +976,7 @@ export default function ApplicationDetailsPage() {
 
   const renderSubTabs = () => {
     const allNavigationTabs: Tab[] = ([
-      "Overview", "Personal Information", "Contact & Address", "Co-Applicants", "Documents",
+      "Overview", "Personal Details", "Contact & Address", "Co-Applicants", "Documents",
       "Identity & KYC", "Employment / Business", "Financial Profile", "Banking Details",
       "Bureau", "Fraud & Compliance", "Audit Trail", "Notes", "Communication",
       "NACH", "Equifax", "CBS APIs", "Status History", "Decision", "Audit / Logs"
@@ -1165,7 +1165,7 @@ export default function ApplicationDetailsPage() {
 
       {(() => {
         const allNavigationTabs: Tab[] = [
-          "Overview", "Customer Profile", "Personal Information", "Contact & Address", "Identity & KYC",
+          "Overview", "Customer Profile", "Personal Details", "Contact & Address", "Identity & KYC",
           "Employment / Business", "Financial Profile", "Banking Details", "Co-Applicants", "Documents",
           "Bureau", "Fraud & Compliance", "Audit Trail", "Notes", "Communication",
           "NACH", "Equifax", "CBS APIs", "Status History", "Decision", "Audit / Logs"
@@ -1174,8 +1174,7 @@ export default function ApplicationDetailsPage() {
           if (width < 640) return 2;
           if (width < 900) return 3;
           if (width < 1180) return 5;
-          if (width < 1440) return 7;
-          return 8;
+          return 7;
         };
         const visibleCount = getVisibleCount(windowWidth);
         const primaryTabs = allNavigationTabs.slice(0, visibleCount);
@@ -1184,7 +1183,7 @@ export default function ApplicationDetailsPage() {
         const tabIcons: Partial<Record<Tab, React.ReactNode>> = {
           "Overview": <Activity size={13} />,
           "Customer Profile": <User size={13} />,
-          "Personal Information": <User size={13} />,
+          "Personal Details": <User size={13} />,
           "Contact & Address": <MapPin size={13} />,
           "Identity & KYC": <ShieldCheck size={13} />,
           "Employment / Business": <Briefcase size={13} />,
@@ -1196,7 +1195,7 @@ export default function ApplicationDetailsPage() {
 
         return (
           <div className="sticky top-0 z-30 -mx-2.5 mb-2.5 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 lg:-mx-3 lg:px-6 xl:-mx-4 xl:px-8 overflow-visible">
-            <div className="flex h-11 items-center gap-5 sm:gap-7 overflow-visible">
+            <div className="flex h-12 items-center gap-4 sm:gap-6 xl:gap-8 overflow-visible">
               {primaryTabs.map((tab) => {
                 const isActive = activeTab === tab;
                 return (
@@ -1206,7 +1205,7 @@ export default function ApplicationDetailsPage() {
                       setActiveTab(tab);
                       setIsMoreTabOpen(false);
                     }}
-                    className={`relative inline-flex h-full shrink-0 items-center gap-2 text-[11px] font-extrabold transition-all cursor-pointer ${isActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
+                    className={`relative inline-flex h-full shrink-0 items-center gap-2 text-[12px] font-extrabold transition-all cursor-pointer ${isActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
                   >
                     <span className={isActive ? "text-[#5F39F8]" : "text-[#64748B]"}>{tabIcons[tab]}</span>
                     <span>{tab}</span>
@@ -1222,7 +1221,7 @@ export default function ApplicationDetailsPage() {
                   )}
                   <button
                     onClick={() => setIsMoreTabOpen(!isMoreTabOpen)}
-                    className={`relative z-30 inline-flex h-11 items-center gap-1 text-[11px] font-extrabold transition-all cursor-pointer ${isDropdownActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
+                    className={`relative z-30 inline-flex h-12 items-center gap-1 text-[12px] font-extrabold transition-all cursor-pointer ${isDropdownActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
                   >
                     <span>{isDropdownActive ? activeTab : "More"}</span>
                     <ChevronDown size={14} className={`transition-transform duration-200 ${isMoreTabOpen ? "rotate-180" : ""}`} />
@@ -1266,31 +1265,27 @@ export default function ApplicationDetailsPage() {
               />
             </div>
 
-            <span className="inline-block px-3 py-1 rounded-full text-[10px] font-extrabold bg-[#EEF2FF] text-[#5F39F8] border border-[#E0E7FF] mb-3 select-none">
-              PRIMARY APPLICANT
-            </span>
-
             <h2 className="text-base font-bold text-slate-800 text-center mb-3 truncate w-full" title={`${appData.first_name} ${appData.middle_name ? `${appData.middle_name} ` : ""}${appData.last_name}`}>
               {appData.first_name} {appData.middle_name ? `${appData.middle_name} ` : ""}{appData.last_name}
             </h2>
 
             {/* Badges row: gender, age, marital status */}
-            <div className="flex flex-wrap items-center justify-center gap-1.5 mb-4 w-full text-[10px] font-extrabold text-slate-500">
-              <span className="inline-flex items-center gap-1 bg-slate-50 border border-slate-150 px-2 py-0.5 rounded-md">
+            <div className="flex flex-nowrap items-center justify-center gap-1 mb-4 w-full text-[9px] font-extrabold text-slate-500">
+              <span className="inline-flex min-w-0 items-center gap-1 bg-slate-50 border border-slate-150 px-1.5 py-0.5 rounded-md">
                 <User size={12} className="text-slate-400" />
-                <span>{(() => {
+                <span className="whitespace-nowrap">{(() => {
                   const gender = (appData.gender || "").toLowerCase();
                   if (gender === "female" || gender === "f") return "Female";
                   return "Male";
                 })()}</span>
               </span>
-              <span className="inline-flex items-center gap-1 bg-slate-50 border border-slate-150 px-2 py-0.5 rounded-md">
+              <span className="inline-flex min-w-0 items-center gap-1 bg-slate-50 border border-slate-150 px-1.5 py-0.5 rounded-md">
                 <Calendar size={12} className="text-slate-400" />
-                <span>32 Yrs</span>
+                <span className="whitespace-nowrap">32 Yrs</span>
               </span>
-              <span className="inline-flex items-center gap-1 bg-slate-50 border border-slate-150 px-2 py-0.5 rounded-md">
+              <span className="inline-flex min-w-0 items-center gap-1 bg-slate-50 border border-slate-150 px-1.5 py-0.5 rounded-md">
                 <Heart size={12} className="text-slate-400" />
-                <span>Married</span>
+                <span className="whitespace-nowrap">Married</span>
               </span>
             </div>
 
@@ -1334,15 +1329,77 @@ export default function ApplicationDetailsPage() {
               </div>
             </div>
             
+            <span className="mb-3 inline-flex w-full items-center justify-center rounded-full border border-[#E0E7FF] bg-[#EEF2FF] px-3 py-1 text-[10px] font-extrabold text-[#5F39F8] select-none">
+              PRIMARY APPLICANT
+            </span>
+
             <button className="w-full h-9 border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-xs">
               <span>View Customer 360</span>
               <ExternalLink size={12} className="text-[#94A3B8]" />
             </button>
           </div>
 
+            <div className="w-full rounded-[14px] border border-[#E1E6EE] bg-white px-5 pt-[17px] pb-4 shadow-[0_2px_8px_rgba(15,23,42,0.08)] flex flex-col items-center">
+              <h3 className="w-full text-center text-[11px] font-extrabold uppercase tracking-[0.08em] text-[#111D36] mb-[14px]">
+                CIBIL SCORE
+              </h3>
 
-            {/* CIBIL Score Card - Clean Premium Design */}
-            <div className="w-full max-w-[240px] mx-auto rounded-xl border border-[#E2E8F0] bg-white p-4 shadow-sm flex flex-col items-center">
+              <div className="flex items-center justify-center w-full">
+                <svg viewBox="0 0 180 112" className="w-[152px] h-[100px]" aria-label="CIBIL score not reported">
+                  <path d="M 38 86 A 52 52 0 0 1 142 86" fill="none" stroke="#D8F0FB" strokeWidth="8.5" strokeLinecap="round" />
+                  <g stroke="#78BFE7" strokeWidth="1" strokeLinecap="round">
+                    <line x1="48.0" y1="86.0" x2="51.7" y2="86.0" />
+                    <line x1="50.7" y1="71.2" x2="54.3" y2="72.2" />
+                    <line x1="58.5" y1="58.2" x2="61.7" y2="60.1" />
+                    <line x1="70.5" y1="49.1" x2="72.4" y2="52.3" />
+                    <line x1="84.9" y1="44.5" x2="85.5" y2="48.1" />
+                    <line x1="100.1" y1="44.5" x2="99.5" y2="48.1" />
+                    <line x1="114.5" y1="49.1" x2="112.6" y2="52.3" />
+                    <line x1="126.5" y1="58.2" x2="123.3" y2="60.1" />
+                    <line x1="134.3" y1="71.2" x2="130.7" y2="72.2" />
+                    <line x1="137.0" y1="86.0" x2="133.3" y2="86.0" />
+                  </g>
+                  <line x1="42" y1="87" x2="90" y2="69" stroke="#138ED0" strokeWidth="1.8" strokeLinecap="round" />
+                  <circle cx="42" cy="87" r="4" fill="#078FCE" />
+                  <circle cx="90" cy="69" r="8.6" fill="#0A91CF" />
+                </svg>
+              </div>
+
+              <div className="-mt-[3px] text-[12px] font-extrabold text-[#475569]">Not Reported</div>
+
+              <div className="mt-[15px] w-[160px] max-w-full">
+                <div className="mb-1 flex justify-between px-1 text-[7px] font-bold uppercase tracking-[0.08em]">
+                  <span className="text-[#F06C6C]">Bad</span>
+                  <span className="text-[#F06C6C]">Good</span>
+                </div>
+                <div className="relative h-[38px]">
+                  <div className="absolute left-0 right-0 top-0 h-[9px] overflow-hidden rounded-full bg-[#FFD2CF]">
+                    <div className="h-full w-full bg-[linear-gradient(90deg,#FFD5D2_0%,#FFB4AF_35%,#FF938C_66%,#FF6860_100%)]" />
+                    <div className="absolute left-[37%] top-0 h-full w-px bg-white/70" />
+                    <div className="absolute left-[62%] top-0 h-full w-px bg-white/70" />
+                  </div>
+                  <div className="absolute left-0 right-0 top-[19px] flex justify-between px-1 text-[6px] font-bold text-[#CDD4DF]">
+                    <span>300</span>
+                    <span>550</span>
+                    <span>750</span>
+                    <span>850</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-[2px] flex items-center justify-center gap-1.5 text-[9px] font-medium text-[#A1AABA]">
+                <span>Vantage Score 3.0 credit score by</span>
+                <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#0A91CF] text-[7px] font-black text-[#0A91CF]">TU</span>
+              </div>
+
+              <div className="mt-4 flex w-full items-center justify-center gap-2 border-t border-[#F0F3F7] pt-3">
+                <span className="text-[9px] font-medium uppercase text-[#AAB3C2]">REPORT DATE:</span>
+                <span className="text-[10px] font-extrabold text-[#0F1F3D]">16/07/2026</span>
+              </div>
+            </div>
+
+            {/* CIBIL Score Card */}
+            <div className="hidden">
               
               {/* Card Header */}
               <h3 className="w-full text-center text-[10px] font-extrabold uppercase tracking-widest text-[#94A3B8] mb-3">
@@ -1442,7 +1499,7 @@ export default function ApplicationDetailsPage() {
           {/* Tabs Navigation */}
           {false && (() => {
             const allNavigationTabs: Tab[] = [
-              "Overview", "Personal Information", "Contact & Address", "Co-Applicants", "Documents", 
+              "Overview", "Personal Details", "Contact & Address", "Co-Applicants", "Documents", 
               "Identity & KYC", "Employment / Business", "Financial Profile", "Banking Details", 
               "Bureau", "Fraud & Compliance", "Audit Trail", "Notes", "Communication", 
               "NACH", "Equifax", "CBS APIs", "Status History", "Decision", "Audit / Logs"
@@ -1556,100 +1613,126 @@ export default function ApplicationDetailsPage() {
           {/* Tab Content Areas */}
           {activeTab === "Overview" && (
             <div className="space-y-2.5 animate-fade-slide-up">
-              {/* Uneven overview grid: wide content stack plus compact action stack */}
-              <div className="grid grid-flow-dense grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] gap-2.5 xl:gap-2.5 items-start">
-                <div className="space-y-2.5 xl:space-y-2.5 min-w-0">
+              {/* Top overview grid: three blocks per row on large screens with no nested gaps. */}
+              <div className="grid grid-flow-dense grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 xl:gap-3 items-stretch">
                 
                 {/* 1. Application Status Timeline */}
-                <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm">
-                  <div>
-                    <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-3 mb-4">Application Status</h3>
-                    <div className="relative pl-6 space-y-2 xl:space-y-4 border-l border-[#E2E8F0] ml-2">
+                <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-sm xl:col-start-1 xl:row-start-1 xl:row-span-2 xl:h-full">
+                  <div className="flex h-full flex-col">
+                    <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-2.5 mb-3">Application Status</h3>
+                    <div className="relative ml-2 flex flex-1 flex-col justify-between gap-2 border-l border-[#E2E8F0] pl-5">
                       <div className="relative">
-                        <span className="absolute -left-[30px] top-0.5 w-4 h-4 rounded-full bg-emerald-500 border-4 border-white flex items-center justify-center shadow-xs">
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-[3px] border-white flex items-center justify-center shadow-xs">
                           <span className="w-1.5 h-1.5 rounded-full bg-white" />
                         </span>
-                        <div className="text-xs font-bold text-[#1E293B]">Lead Captured</div>
+                        <div className="text-[11px] font-bold text-[#1E293B]">Lead Captured</div>
                         <div className="text-[10px] text-[#64748B] mt-0.5">16 May 2024, 09:15 AM</div>
                       </div>
                       <div className="relative">
-                        <span className="absolute -left-[30px] top-0.5 w-4 h-4 rounded-full bg-emerald-500 border-4 border-white flex items-center justify-center shadow-xs">
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-[3px] border-white flex items-center justify-center shadow-xs">
                           <span className="w-1.5 h-1.5 rounded-full bg-white" />
                         </span>
-                        <div className="text-xs font-bold text-[#1E293B]">Application Submitted</div>
+                        <div className="text-[11px] font-bold text-[#1E293B]">Application Submitted</div>
                         <div className="text-[10px] text-[#64748B] mt-0.5">16 May 2024, 10:20 AM</div>
                       </div>
                       <div className="relative">
-                        <span className="absolute -left-[30px] top-0.5 w-4 h-4 rounded-full bg-emerald-500 border-4 border-white flex items-center justify-center shadow-xs">
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-[3px] border-white flex items-center justify-center shadow-xs">
                           <span className="w-1.5 h-1.5 rounded-full bg-white" />
                         </span>
-                        <div className="text-xs font-bold text-[#1E293B]">Document Verification</div>
+                        <div className="text-[11px] font-bold text-[#1E293B]">Document Verification</div>
                         <div className="text-[10px] text-[#64748B] mt-0.5">16 May 2024, 11:10 AM</div>
                       </div>
                       <div className="relative">
-                        <span className="absolute -left-[30px] top-0.5 w-4 h-4 rounded-full bg-[#5F39F8] border-4 border-white flex items-center justify-center shadow-xs">
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-[3px] border-white flex items-center justify-center shadow-xs">
                           <span className="w-1.5 h-1.5 rounded-full bg-white" />
                         </span>
-                        <div className="text-xs font-bold text-[#5F39F8]">Credit Assessment</div>
+                        <div className="text-[11px] font-bold text-[#1E293B]">Bureau Report Pulled</div>
+                        <div className="text-[10px] text-[#64748B] mt-0.5">16 May 2024, 12:05 PM</div>
+                      </div>
+                      <div className="relative">
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-[3px] border-white flex items-center justify-center shadow-xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                        </span>
+                        <div className="text-[11px] font-bold text-[#1E293B]">Banking Analysis</div>
+                        <div className="text-[10px] text-[#64748B] mt-0.5">16 May 2024, 04:15 PM</div>
+                      </div>
+                      <div className="relative">
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-[3px] border-white flex items-center justify-center shadow-xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                        </span>
+                        <div className="text-[11px] font-bold text-[#1E293B]">Eligibility Check</div>
+                        <div className="text-[10px] text-[#64748B] mt-0.5">17 May 2024, 10:30 AM</div>
+                      </div>
+                      <div className="relative">
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-[#5F39F8] border-[3px] border-white flex items-center justify-center shadow-xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                        </span>
+                        <div className="text-[11px] font-bold text-[#5F39F8]">Credit Assessment</div>
                         <div className="text-[10px] text-[#64748B] mt-0.5">17 May 2024, 01:20 PM</div>
                       </div>
                       <div className="relative">
-                        <span className="absolute -left-[30px] top-0.5 w-4 h-4 rounded-full bg-slate-200 border-4 border-white flex items-center justify-center shadow-xs" />
-                        <div className="text-xs font-semibold text-[#64748B]">Underwriting</div>
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-slate-200 border-[3px] border-white flex items-center justify-center shadow-xs" />
+                        <div className="text-[11px] font-semibold text-[#64748B]">Underwriting</div>
                         <div className="text-[10px] text-[#94A3B8] mt-0.5">Pending</div>
                       </div>
                       <div className="relative">
-                        <span className="absolute -left-[30px] top-0.5 w-4 h-4 rounded-full bg-slate-200 border-4 border-white flex items-center justify-center shadow-xs" />
-                        <div className="text-xs font-semibold text-[#64748B]">Credit Committee</div>
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-slate-200 border-[3px] border-white flex items-center justify-center shadow-xs" />
+                        <div className="text-[11px] font-semibold text-[#64748B]">Credit Committee</div>
                         <div className="text-[10px] text-[#94A3B8] mt-0.5">Pending</div>
                       </div>
                       <div className="relative">
-                        <span className="absolute -left-[30px] top-0.5 w-4 h-4 rounded-full bg-slate-200 border-4 border-white flex items-center justify-center shadow-xs" />
-                        <div className="text-xs font-semibold text-[#64748B]">Sanction</div>
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-slate-200 border-[3px] border-white flex items-center justify-center shadow-xs" />
+                        <div className="text-[11px] font-semibold text-[#64748B]">Sanction</div>
                         <div className="text-[10px] text-[#94A3B8] mt-0.5">Pending</div>
                       </div>
                       <div className="relative">
-                        <span className="absolute -left-[30px] top-0.5 w-4 h-4 rounded-full bg-slate-200 border-4 border-white flex items-center justify-center shadow-xs" />
-                        <div className="text-xs font-semibold text-[#64748B]">Disbursement</div>
+                        <span className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full bg-slate-200 border-[3px] border-white flex items-center justify-center shadow-xs" />
+                        <div className="text-[11px] font-semibold text-[#64748B]">Disbursement</div>
                         <div className="text-[10px] text-[#94A3B8] mt-0.5">Pending</div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-start">
-
-                {/* 4. eKYC Progress */}
-                <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm lg:col-span-1 xl:col-span-1">
-                  <div>
-                    <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-3 mb-3">eKYC Progress</h3>
-                    <div className="space-y-1.5 text-xs font-semibold text-[#1E293B]">
-                      {[
-                        "Aadhaar eKYC",
-                        "PAN Verification",
-                        "CKYC",
-                        "DigiLocker",
-                        "Face Match",
-                        "Liveness Check",
-                        "Video KYC"
-                      ].map((item) => (
-                        <div key={item} className="flex items-center justify-between py-0.5 border-b border-slate-50/50">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />
-                            <span className="text-[#1E293B] truncate">{item}</span>
-                          </div>
-                          <span className="text-emerald-600 text-[10px] font-bold shrink-0">Completed</span>
+                  {/* 2. Source of Lead */}
+                  <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm xl:col-start-2 xl:row-start-1">
+                    <div>
+                      <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-3 mb-3">Source of Lead</h3>
+                      <div className="space-y-2 text-xs font-semibold">
+                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
+                          <span className="text-[#64748B]">Source Type</span>
+                          <span className="text-[#1E293B] font-extrabold text-right">DSA</span>
                         </div>
-                      ))}
+                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
+                          <span className="text-[#64748B]">DSA Name</span>
+                          <span className="text-[#1E293B] font-extrabold text-right truncate max-w-[110px]" title="Pyramid Finserv">Pyramid Finserv</span>
+                        </div>
+                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
+                          <span className="text-[#64748B]">DSA Code</span>
+                          <span className="text-[#1E293B] font-extrabold text-right truncate max-w-[110px] inline-block" title="DSA12345">DSA12345</span>
+                        </div>
+                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
+                          <span className="text-[#64748B]">Campaign</span>
+                          <span className="text-[#1E293B] font-extrabold text-right truncate max-w-[110px]" title="Summer Offer 2024">Summer Offer</span>
+                        </div>
+                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
+                          <span className="text-[#64748B]">Lead ID</span>
+                          <span className="text-[#1E293B] font-extrabold text-right truncate max-w-[110px] inline-block" title={`LD${appData.lapp_id || '12345678'}`}>LD{appData.lapp_id || '12345678'}</span>
+                        </div>
+                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
+                          <span className="text-[#64748B]">Captured On</span>
+                          <span className="text-[#1E293B] font-extrabold text-right">14 May 2024</span>
+                        </div>
+                        <div className="flex items-center justify-between py-1">
+                          <span className="text-[#64748B]">Captured By</span>
+                          <span className="text-[#1E293B] font-extrabold text-right truncate max-w-[110px] inline-block" title="Neha Verma">Neha Verma</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <button className="w-full h-9 border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg cursor-pointer transition-all flex items-center justify-center gap-2 mt-4">
-                    View eKYC Details
-                  </button>
-                </div>
 
-                {/* 3. Customer Summary */}
-                <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm lg:col-span-1 xl:col-span-1">
+                  {/* 3. Customer Summary */}
+                  <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm xl:col-start-3 xl:row-start-1">
                   <div>
                     <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-3 mb-4">Customer Summary</h3>
                     <div className="space-y-2.5">
@@ -1675,12 +1758,67 @@ export default function ApplicationDetailsPage() {
                     View All Customers
                   </button>
                 </div>
+                  {/* 4. eKYC Progress */}
+                  <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm xl:col-start-2 xl:row-start-2">
+                    <div>
+                      <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-3 mb-3">eKYC Progress</h3>
+                      <div className="space-y-1.5 text-xs font-semibold text-[#1E293B]">
+                        {[
+                          "Aadhaar eKYC",
+                          "PAN Verification",
+                          "CKYC",
+                          "DigiLocker",
+                          "Face Match",
+                          "Liveness Check",
+                          "Video KYC"
+                        ].map((item) => (
+                          <div key={item} className="flex items-center justify-between py-0.5 border-b border-slate-50/50">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />
+                              <span className="text-[#1E293B] truncate">{item}</span>
+                            </div>
+                            <span className="text-emerald-600 text-[10px] font-bold shrink-0">Completed</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <button className="w-full h-9 border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg cursor-pointer transition-all flex items-center justify-center gap-2 mt-4">
+                      View eKYC Details
+                    </button>
+                  </div>
 
-                </div>
-                </div>
+                  {/* 5. Quick Actions */}
+                  <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm xl:col-start-3 xl:row-start-2">
+                    <div>
+                      <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-2 mb-3">Quick Actions</h3>
+                      <div className="grid grid-cols-1 gap-2">
+                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg cursor-pointer transition-all">
+                          <User size={14} className="text-[#94A3B8] shrink-0" />
+                          <span>Assign To</span>
+                        </button>
+                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg cursor-pointer transition-all">
+                          <FileText size={14} className="text-[#94A3B8] shrink-0" />
+                          <span>Add Note</span>
+                        </button>
+                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg cursor-pointer transition-all">
+                          <UploadCloud size={14} className="text-[#94A3B8] shrink-0" />
+                          <span>Upload Document</span>
+                        </button>
+                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg cursor-pointer transition-all">
+                          <CheckCircle2 size={14} className="text-[#94A3B8] shrink-0" />
+                          <span>Send for Approval</span>
+                        </button>
+                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-red-200 bg-red-50/50 hover:bg-red-50 text-red-600 rounded-lg cursor-pointer transition-all">
+                          <AlertCircle size={14} className="text-red-500 shrink-0" />
+                          <span>Reject Application</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+              </div>
 
                 {/* 6. Loan Product & Key Parameters */}
-                <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm space-y-2.5 xl:space-y-3 lg:col-span-2">
+                <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm space-y-2.5 xl:space-y-3">
                   <div>
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-2">
                       <h3 className="text-sm font-bold text-[#1E293B]">Loan Product & Key Parameters</h3>
@@ -1769,171 +1907,119 @@ export default function ApplicationDetailsPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2.5 xl:space-y-2.5 min-w-0">
-                  {/* 2. Source of Lead */}
-                  <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm">
-                    <div>
-                      <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-3 mb-3">Source of Lead</h3>
-                      <div className="space-y-2 text-xs font-semibold">
-                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
-                          <span className="text-[#64748B]">Source Type</span>
-                          <span className="text-[#1E293B] font-extrabold text-right">DSA</span>
-                        </div>
-                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
-                          <span className="text-[#64748B]">DSA Name</span>
-                          <span className="text-[#1E293B] font-extrabold text-right truncate max-w-[110px]" title="Pyramid Finserv">Pyramid Finserv</span>
-                        </div>
-                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
-                          <span className="text-[#64748B]">DSA Code</span>
-                          <span className="text-[#1E293B] font-extrabold text-right truncate max-w-[110px] inline-block" title="DSA12345">DSA12345</span>
-                        </div>
-                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
-                          <span className="text-[#64748B]">Campaign</span>
-                          <span className="text-[#1E293B] font-extrabold text-right truncate max-w-[110px]" title="Summer Offer 2024">Summer Offer</span>
-                        </div>
-                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
-                          <span className="text-[#64748B]">Lead ID</span>
-                          <span className="text-[#1E293B] font-extrabold text-right truncate max-w-[110px] inline-block" title={`LD${appData.lapp_id || '12345678'}`}>LD{appData.lapp_id || '12345678'}</span>
-                        </div>
-                        <div className="flex items-center justify-between py-1 border-b border-slate-50">
-                          <span className="text-[#64748B]">Captured On</span>
-                          <span className="text-[#1E293B] font-extrabold text-right">14 May 2024</span>
-                        </div>
-                        <div className="flex items-center justify-between py-1">
-                          <span className="text-[#64748B]">Captured By</span>
-                          <span className="text-[#1E293B] font-extrabold text-right truncate max-w-[110px] inline-block" title="Neha Verma">Neha Verma</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 5. Quick Actions */}
-                  <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-sm">
-                    <div>
-                      <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-2 mb-3">Quick Actions</h3>
-                      <div className="grid grid-cols-1 gap-2">
-                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg cursor-pointer transition-all">
-                          <User size={14} className="text-[#94A3B8] shrink-0" />
-                          <span>Assign To</span>
-                        </button>
-                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg cursor-pointer transition-all">
-                          <FileText size={14} className="text-[#94A3B8] shrink-0" />
-                          <span>Add Note</span>
-                        </button>
-                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg cursor-pointer transition-all">
-                          <UploadCloud size={14} className="text-[#94A3B8] shrink-0" />
-                          <span>Upload Document</span>
-                        </button>
-                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg cursor-pointer transition-all">
-                          <CheckCircle2 size={14} className="text-[#94A3B8] shrink-0" />
-                          <span>Send for Approval</span>
-                        </button>
-                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-red-200 bg-red-50/50 hover:bg-red-50 text-red-600 rounded-lg cursor-pointer transition-all">
-                          <AlertCircle size={14} className="text-red-500 shrink-0" />
-                          <span>Reject Application</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Relationship Mapping, Customer 360, Duplicate Check */}
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-2.5 xl:gap-3">
+              {/* Relationship Mapping + Duplicate Check, Customer 360 */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-2.5 xl:gap-3">
                 
-                {/* Relationship Mapping */}
-                <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm space-y-2.5 xl:space-y-3">
+                {/* Relationship Mapping + Duplicate Check */}
+                <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm flex min-h-[360px] flex-col">
                   <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-3">Relationship Mapping</h3>
-                  <div className="flex flex-col items-center justify-center p-4 border border-slate-100 rounded-xl space-y-4">
-                    <div className="flex items-center gap-8">
-                      <div className="flex flex-col items-center text-center">
-                        <div className="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-100 text-[#5F39F8] flex items-center justify-center font-bold text-xs shadow-xs">
+                  <div className="relative mt-3 min-h-[220px] flex-1 overflow-hidden rounded-xl border border-slate-100 bg-white px-4 py-5">
+                    <div className="absolute left-[27%] right-[27%] top-[74px] h-px bg-slate-200" />
+                    <div className="absolute left-1/2 top-[74px] h-[72px] w-px -translate-x-1/2 bg-slate-200" />
+                    <span className="absolute left-1/2 top-[111px] -translate-x-1/2 rounded-full bg-white px-2 py-0.5 text-[8px] font-black uppercase tracking-wide text-slate-400">
+                      Guarantor
+                    </span>
+
+                    <div className="flex items-start justify-between">
+                      <div className="flex w-[112px] flex-col items-center text-center">
+                        <div className="w-14 h-14 rounded-full bg-indigo-50 border border-indigo-100 text-[#5F39F8] flex items-center justify-center font-extrabold text-sm shadow-xs">
                           {appData.first_name?.[0] || "R"}{appData.last_name?.[0] || "S"}
                         </div>
-                        <span className="text-[10px] font-bold text-[#1E293B] mt-1.5 truncate max-w-[80px]">{appData.first_name} {appData.last_name}</span>
-                        <span className="text-[9px] text-[#64748B] font-semibold">Applicant</span>
-                      </div>
-                      
-                      <div className="h-[2px] bg-slate-200 w-10 relative flex items-center justify-center">
-                        <span className="absolute text-[8px] bg-white px-1 font-bold text-slate-400">Joint</span>
+                        <span className="text-[11px] font-extrabold text-[#1E293B] mt-2 truncate max-w-[112px]">{appData.first_name} {appData.last_name}</span>
+                        <span className="text-[10px] text-[#64748B] font-bold">Applicant</span>
                       </div>
 
-                      <div className="flex flex-col items-center text-center">
-                        <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs shadow-xs">
+                      <span className="mt-[45px] rounded-full bg-white px-2 py-0.5 text-[8px] font-black uppercase tracking-wide text-slate-400">
+                        Joint
+                      </span>
+
+                      <div className="flex w-[112px] flex-col items-center text-center">
+                        <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center font-extrabold text-sm shadow-xs">
                           PS
                         </div>
-                        <span className="text-[10px] font-bold text-[#1E293B] mt-1.5">Priya Sharma</span>
-                        <span className="text-[9px] text-[#64748B] font-semibold">Co-Applicant</span>
+                        <span className="text-[11px] font-extrabold text-[#1E293B] mt-2">Priya Sharma</span>
+                        <span className="text-[10px] text-[#64748B] font-bold">Co-Applicant</span>
                       </div>
-                    </div>
-                    
-                    <div className="w-[2px] h-6 bg-slate-200 relative flex justify-center">
-                      <span className="absolute text-[8px] bg-white py-0.5 font-bold text-slate-400 left-3 top-0 whitespace-nowrap">Guarantor</span>
                     </div>
 
-                    <div className="flex flex-col items-center text-center">
-                      <div className="w-10 h-10 rounded-full bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs shadow-xs">
+                    <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 flex-col items-center text-center">
+                      <div className="w-14 h-14 rounded-full bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center font-extrabold text-sm shadow-xs">
                         SS
                       </div>
-                      <span className="text-[10px] font-bold text-[#1E293B] mt-1.5">Suresh Sharma</span>
-                      <span className="text-[9px] text-[#64748B] font-semibold">Guarantor</span>
+                      <span className="text-[11px] font-extrabold text-[#1E293B] mt-2">Suresh Sharma</span>
+                      <span className="text-[10px] text-[#64748B] font-bold">Guarantor</span>
                     </div>
+                  </div>
+
+                  <div className="mt-3 flex items-center gap-3 rounded-xl border border-slate-100 bg-[#F8FAFC] p-3">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-emerald-100 bg-emerald-50 text-emerald-500 shadow-xs">
+                      <CheckCircle2 size={24} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-xs font-extrabold text-[#1E293B]">No Duplicates Found</h4>
+                      <p className="mt-0.5 text-[10px] font-semibold leading-relaxed text-[#64748B]">
+                        No potential duplicate customers were found.
+                      </p>
+                    </div>
+                    <button className="h-8 shrink-0 rounded-lg border border-[#E2E8F0] bg-white px-3 text-[11px] font-bold text-slate-700 transition-all hover:bg-slate-50">
+                      View Details
+                    </button>
                   </div>
                 </div>
 
                 {/* Customer 360 */}
-                <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm flex flex-col justify-between">
+                <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm flex min-h-[286px] flex-col justify-between">
                   <div>
                     <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-3 mb-4">Customer 360</h3>
-                    <div className="grid grid-cols-2 gap-2.5 text-xs font-semibold">
-                      <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between">
+                    <div className="grid grid-cols-2 gap-2 text-xs font-semibold">
+                      <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg flex items-center justify-between">
                         <div>
                           <div className="text-[9px] text-[#64748B] font-bold uppercase tracking-wider">Applications</div>
-                          <div className="text-sm font-bold text-[#1E293B] mt-1">2</div>
+                          <div className="text-base font-extrabold text-[#1E293B] mt-1">2</div>
                         </div>
-                        <FileText size={18} className="text-blue-500" />
+                        <FileText size={20} className="text-blue-500" />
                       </div>
-                      <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between">
+                      <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg flex items-center justify-between">
                         <div>
                           <div className="text-[9px] text-[#64748B] font-bold uppercase tracking-wider">Loans</div>
-                          <div className="text-sm font-bold text-[#1E293B] mt-1">1</div>
+                          <div className="text-base font-extrabold text-[#1E293B] mt-1">1</div>
                         </div>
-                        <Building2 size={18} className="text-emerald-500" />
+                        <Building2 size={20} className="text-emerald-500" />
                       </div>
-                      <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between">
+                      <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg flex items-center justify-between">
                         <div>
                           <div className="text-[9px] text-[#64748B] font-bold uppercase tracking-wider">Overdue</div>
-                          <div className="text-sm font-bold text-[#1E293B] mt-1">0</div>
+                          <div className="text-base font-extrabold text-[#1E293B] mt-1">0</div>
                         </div>
-                        <AlertCircle size={18} className="text-rose-500" />
+                        <AlertCircle size={20} className="text-rose-500" />
                       </div>
-                      <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between">
+                      <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg flex items-center justify-between">
                         <div>
                           <div className="text-[9px] text-[#64748B] font-bold uppercase tracking-wider">Total Exposure</div>
                           <div className="text-sm font-bold text-[#1E293B] mt-1">₹ 35,00,000</div>
                         </div>
                         <span className="text-indigo-650 font-bold text-sm">₹</span>
                       </div>
-                      <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between">
+                      <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg flex items-center justify-between">
                         <div>
                           <div className="text-[9px] text-[#64748B] font-bold uppercase tracking-wider">KYC Completed</div>
-                          <div className="text-sm font-bold text-[#1E293B] mt-1">100%</div>
+                          <div className="text-base font-extrabold text-[#1E293B] mt-1">100%</div>
                         </div>
-                        <CheckCircle2 size={18} className="text-teal-500" />
+                        <CheckCircle2 size={20} className="text-teal-500" />
                       </div>
-                      <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between">
+                      <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg flex items-center justify-between">
                         <div>
                           <div className="text-[9px] text-[#64748B] font-bold uppercase tracking-wider">Docs Uploaded</div>
-                          <div className="text-sm font-bold text-[#1E293B] mt-1">18</div>
+                          <div className="text-base font-extrabold text-[#1E293B] mt-1">18</div>
                         </div>
-                        <UploadCloud size={18} className="text-[#5F39F8]" />
+                        <UploadCloud size={20} className="text-[#5F39F8]" />
                       </div>
-                      <div className="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl flex items-center justify-between col-span-2">
+                      <div className="p-3.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg flex items-center justify-between col-span-2">
                         <div>
                           <div className="text-[9px] text-[#64748B] font-bold uppercase tracking-wider">Last Interaction</div>
-                          <div className="text-sm font-bold text-[#1E293B] mt-1">15 May 2024</div>
+                          <div className="text-base font-extrabold text-[#1E293B] mt-1">15 May 2024</div>
                         </div>
-                        <Calendar size={18} className="text-amber-500" />
+                        <Calendar size={20} className="text-amber-500" />
                       </div>
                     </div>
                   </div>
@@ -1943,24 +2029,6 @@ export default function ApplicationDetailsPage() {
                   </button>
                 </div>
 
-                {/* Duplicate Check */}
-                <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 xl:p-5 shadow-sm flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-3">Duplicate Check</h3>
-                    <div className="flex flex-col items-center justify-center text-center py-6 px-2 space-y-3">
-                      <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center border border-emerald-100">
-                        <CheckCircle2 size={24} />
-                      </div>
-                      <h4 className="text-xs font-bold text-[#1E293B]">No Duplicates Found</h4>
-                      <p className="text-[10px] text-[#64748B] font-semibold leading-relaxed max-w-[200px]">
-                        We have not found any potential duplicate customers.
-                      </p>
-                    </div>
-                  </div>
-                  <button className="w-full h-9 border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg cursor-pointer transition-all flex items-center justify-center gap-2">
-                    View Deduplication Details
-                  </button>
-                </div>
               </div>
             </div>
           )}
@@ -2184,7 +2252,7 @@ export default function ApplicationDetailsPage() {
             </div>
           )}
 
-          {activeTab === "Personal Information" && (
+          {activeTab === "Personal Details" && (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 items-start">
 
               {/* Left Column (Address & Loan details with underline styled fields) */}
@@ -5834,7 +5902,7 @@ export default function ApplicationDetailsPage() {
                 <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="font-extrabold text-[#E31837] text-base tracking-tight">CIBIL</div>
+                      <BureauLogo bureau="cibil" />
                       <span className="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold rounded border border-green-200/50">Available</span>
                       <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[10px] font-bold rounded border border-indigo-200/50">Primary</span>
                     </div>
@@ -5872,7 +5940,7 @@ export default function ApplicationDetailsPage() {
                 <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="font-extrabold text-[#00529B] text-base tracking-tight">CRIF High Mark</div>
+                      <BureauLogo bureau="crif" />
                       <span className="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold rounded border border-green-200/50">Available</span>
                     </div>
                     <button className="text-slate-400 hover:text-slate-600 cursor-pointer text-lg leading-none">⋮</button>
@@ -5909,7 +5977,7 @@ export default function ApplicationDetailsPage() {
                 <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="font-extrabold text-[#C41230] text-base tracking-tight">EQUIFAX</div>
+                      <BureauLogo bureau="equifax" />
                       <span className="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold rounded border border-green-200/50">Available</span>
                     </div>
                     <button className="text-slate-400 hover:text-slate-600 cursor-pointer text-lg leading-none">⋮</button>
@@ -5946,7 +6014,7 @@ export default function ApplicationDetailsPage() {
                 <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="font-extrabold text-[#702082] text-base tracking-tight">experian</div>
+                      <BureauLogo bureau="experian" />
                       <span className="px-2 py-0.5 bg-red-50 text-red-600 text-[10px] font-bold rounded border border-red-200/50">Not Available</span>
                     </div>
                     <button className="text-slate-400 hover:text-slate-600 cursor-pointer text-lg leading-none">⋮</button>
@@ -6286,19 +6354,20 @@ export default function ApplicationDetailsPage() {
               </div>
 
               <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#F8FAFC] text-[#64748B] font-bold border-b border-[#E2E8F0]">
+                <div className="overflow-x-auto custom-scrollbar">
+                  <table className="min-w-[1320px] w-full table-fixed text-left text-[11px]">
+                  <thead className="bg-[#F8FAFC] text-[#64748B] font-bold border-b border-[#E2E8F0] uppercase tracking-[0.02em]">
                     <tr>
-                      <th className="px-5 py-4 w-12">#</th>
-                      <th className="px-5 py-4 w-44">Date & Time <span className="text-[#5F39F8] inline-block font-black ml-1">↓</span></th>
-                      <th className="px-5 py-4 w-32">Performed By</th>
-                      <th className="px-5 py-4 w-32">Role</th>
-                      <th className="px-5 py-4 w-40">Module</th>
-                      <th className="px-5 py-4 w-40">Activity</th>
-                      <th className="px-5 py-4 w-44">Field Name / Section</th>
-                      <th className="px-5 py-4">Old Value</th>
-                      <th className="px-5 py-4">New Value</th>
-                      <th className="px-5 py-4 w-32">IP Address</th>
+                      <th className="w-12 px-3 py-2.5 whitespace-nowrap">#</th>
+                      <th className="w-44 px-3 py-2.5 whitespace-nowrap">Date & Time <span className="text-[#5F39F8] inline-block font-black ml-1">&#8595;</span></th>
+                      <th className="w-36 px-3 py-2.5 whitespace-nowrap">Performed By</th>
+                      <th className="w-32 px-3 py-2.5 whitespace-nowrap">Role</th>
+                      <th className="w-40 px-3 py-2.5 whitespace-nowrap">Module</th>
+                      <th className="w-44 px-3 py-2.5 whitespace-nowrap">Activity</th>
+                      <th className="w-48 px-3 py-2.5 whitespace-nowrap">Field Name / Section</th>
+                      <th className="w-36 px-3 py-2.5 whitespace-nowrap">Old Value</th>
+                      <th className="w-44 px-3 py-2.5 whitespace-nowrap">New Value</th>
+                      <th className="w-32 px-3 py-2.5 whitespace-nowrap">IP Address</th>
                     </tr>
                   </thead>
                   <tbody className="text-[#1E293B] font-bold divide-y divide-[#F1F5F9]">
@@ -6319,23 +6388,24 @@ export default function ApplicationDetailsPage() {
                       { id: "14", date: "16 May 2024, 11:20 AM", user: "Arjun Singh", role: "Super Admin", module: "Alerts & Notifications", activity: "Alert Acknowledged", field: "Income Mismatch Alert", old: "-", new: "Acknowledged", ip: "10.1.2.45" },
                     ].map((row) => (
                       <tr key={row.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-5 py-4 text-[#64748B]">{row.id}</td>
-                        <td className="px-5 py-4">{row.date}</td>
-                        <td className="px-5 py-4 text-[#64748B] font-medium">{row.user}</td>
-                        <td className="px-5 py-4 text-[#64748B] font-medium">{row.role}</td>
-                        <td className="px-5 py-4 text-[#64748B] font-medium">{row.module}</td>
-                        <td className="px-5 py-4 text-[#64748B] font-medium">{row.activity}</td>
-                        <td className="px-5 py-4 text-[#64748B] font-medium">{row.field}</td>
-                        <td className="px-5 py-4">{row.old}</td>
-                        <td className="px-5 py-4">{row.new}</td>
-                        <td className="px-5 py-4 text-[#64748B] font-medium">{row.ip}</td>
+                        <td className="px-3 py-2.5 text-[#64748B] whitespace-nowrap">{row.id}</td>
+                        <td className="px-3 py-2.5 whitespace-nowrap">{row.date}</td>
+                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.user}>{row.user}</td>
+                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.role}>{row.role}</td>
+                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.module}>{row.module}</td>
+                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.activity}>{row.activity}</td>
+                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.field}>{row.field}</td>
+                        <td className="px-3 py-2.5 whitespace-nowrap truncate" title={row.old}>{row.old}</td>
+                        <td className="px-3 py-2.5 whitespace-nowrap truncate" title={row.new}>{row.new}</td>
+                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap">{row.ip}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+                </div>
                 
                 {/* Pagination Footer */}
-                <div className="px-6 py-4 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-bold text-[#64748B]">
+                <div className="px-4 py-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-bold text-[#64748B]">
                   <div>Showing 1 to 14 of 14 records</div>
                   <div className="flex items-center gap-2.5">
                     <div className="flex items-center gap-1">
@@ -9290,6 +9360,26 @@ function FormInputLike({ label, value }: { label: string; value: any }) {
 }
 
 // Helper Components
+
+function BureauLogo({ bureau }: { bureau: "cibil" | "crif" | "equifax" | "experian" }) {
+  const logos: Record<typeof bureau, { src: string; alt: string; width: string; fit?: string }> = {
+    cibil: { src: "/assets/bureaus/cibil.png", alt: "TransUnion CIBIL", width: "w-[128px]" },
+    crif: { src: "/assets/bureaus/crif.png", alt: "CRIF High Mark", width: "w-[124px]" },
+    equifax: { src: "/assets/bureaus/equifax.svg", alt: "Equifax", width: "w-[116px]" },
+    experian: { src: "/assets/bureaus/experian.svg", alt: "Experian", width: "w-[122px]", fit: "object-cover object-left" },
+  };
+  const logo = logos[bureau];
+
+  return (
+    <span className={`inline-flex h-8 ${logo.width} items-center rounded-md border border-[#E2E8F0] bg-white px-2 shadow-xs`} title={logo.alt}>
+      <img
+        src={logo.src}
+        alt={logo.alt}
+        className={`h-5 w-full ${logo.fit || "object-contain"}`}
+      />
+    </span>
+  );
+}
 
 function BureauInfoRow({ label, value, mono, error }: { label: string; value: any; mono?: boolean; error?: boolean }) {
   return (
