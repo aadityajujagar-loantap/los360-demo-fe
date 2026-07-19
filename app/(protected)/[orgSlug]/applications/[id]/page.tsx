@@ -1213,42 +1213,14 @@ export default function ApplicationDetailsPage() {
           "Decision": <CheckCircle2 size={13} />,
           "Audit / Logs": <FileText size={13} />,
         };
-        const overflowRows = (() => {
-          const measuredWidth = subTabsBarWidth || windowWidth;
-          const horizontalPadding = windowWidth >= 1280 ? 64 : windowWidth >= 1024 ? 48 : 32;
-          const rowGap = tabRowGap;
-          const overflowRightReserve = tabToggleReserve;
-          const availableWidth = Math.max(190, measuredWidth - horizontalPadding - overflowRightReserve);
-          const rows: Tab[][] = [];
-          let currentRow: Tab[] = [];
-          let usedWidth = 0;
-
-          dropdownTabs.forEach((tab) => {
-            const gapWidth = currentRow.length > 0 ? rowGap : 0;
-            const tabWidth = estimateTopTabWidth(tab);
-
-            if (currentRow.length > 0 && usedWidth + gapWidth + tabWidth > availableWidth) {
-              rows.push(currentRow);
-              currentRow = [tab];
-              usedWidth = tabWidth;
-              return;
-            }
-
-            currentRow.push(tab);
-            usedWidth += gapWidth + tabWidth;
-          });
-
-          if (currentRow.length > 0) rows.push(currentRow);
-          return rows;
-        })();
-        const overflowRowRightReserve = tabToggleReserve;
+        const topTabLaneRightReserve = tabToggleReserve;
 
         return (
           <div ref={subTabsContainerRef} className="sticky top-0 z-30 -mx-2.5 mb-2.5 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 lg:-mx-3 lg:px-6 xl:-mx-4 xl:px-8 overflow-visible">
             <div className="relative h-12 overflow-visible">
               <div
                 className="flex h-12 items-center gap-4 overflow-visible sm:gap-6 xl:gap-8"
-                style={dropdownTabs.length > 0 ? { width: `calc(100% - ${overflowRowRightReserve}px)` } : undefined}
+                style={dropdownTabs.length > 0 ? { width: `calc(100% - ${topTabLaneRightReserve}px)` } : undefined}
               >
                 {primaryTabs.map((tab) => {
                   const isActive = activeTab === tab;
@@ -1271,43 +1243,37 @@ export default function ApplicationDetailsPage() {
 
               {dropdownTabs.length > 0 && (
                 <div className="absolute right-0 top-0 flex h-12 shrink-0 items-center">
+                  {isMoreTabOpen && (
+                    <div className="fixed inset-0 z-20 cursor-default bg-transparent" onClick={() => setIsMoreTabOpen(false)} />
+                  )}
                   <button
                     onClick={() => setIsMoreTabOpen(!isMoreTabOpen)}
-                    className={`relative inline-flex h-12 items-center gap-1 text-[12px] font-extrabold transition-all cursor-pointer ${isOverflowActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
+                    className={`relative z-30 inline-flex h-12 items-center gap-1 text-[12px] font-extrabold transition-all cursor-pointer ${isOverflowActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
                   >
                     <span>{isMoreTabOpen ? "Show Less" : "Show More"}</span>
                     <ChevronDown size={14} className={`transition-transform duration-200 ${isMoreTabOpen ? "rotate-180" : ""}`} />
                     {isOverflowActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[#5F39F8]" />}
                   </button>
+                  {isMoreTabOpen && (
+                    <div className="absolute right-0 top-full z-50 mt-1.5 max-h-[350px] w-56 overflow-y-auto rounded-lg border border-[#E2E8F0] bg-white py-1.5 shadow-lg animate-in fade-in slide-in-from-top-1 duration-150">
+                      {dropdownTabs.map((tab) => (
+                        <button
+                          key={tab}
+                          onClick={() => {
+                            setActiveTab(tab);
+                            setIsMoreTabOpen(false);
+                          }}
+                          className={`flex w-full items-center gap-2 px-4 py-2 text-left text-xs font-bold transition-all hover:bg-slate-50 cursor-pointer ${activeTab === tab ? "bg-indigo-50/30 text-[#5F39F8]" : "text-slate-600 hover:text-slate-800"}`}
+                        >
+                          <span className={activeTab === tab ? "text-[#5F39F8]" : "text-[#64748B]"}>{tabIcons[tab]}</span>
+                          <span>{tab}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-            {isMoreTabOpen && dropdownTabs.length > 0 && (
-              <div className="animate-in fade-in slide-in-from-top-1 duration-150">
-                {overflowRows.map((row, rowIndex) => (
-                  <div
-                    key={row.join("-")}
-                    className="flex min-h-9 items-center gap-4 overflow-visible border-t border-[#E2E8F0] py-0.5 sm:gap-6 xl:gap-8"
-                    style={{ width: `calc(100% - ${overflowRowRightReserve}px)` }}
-                  >
-                    {row.map((tab) => {
-                      const isActive = activeTab === tab;
-                      return (
-                        <button
-                          key={`${rowIndex}-${tab}`}
-                          onClick={() => setActiveTab(tab)}
-                          className={`relative inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap text-[12px] font-extrabold transition-all cursor-pointer ${isActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
-                        >
-                          <span className={isActive ? "text-[#5F39F8]" : "text-[#64748B]"}>{tabIcons[tab]}</span>
-                          {tab}
-                          {isActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[#5F39F8]" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         );
       })()}
