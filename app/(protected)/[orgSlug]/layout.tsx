@@ -270,8 +270,8 @@ export default function ProtectedLayout({
     );
   };
 
-  const currentOrgName = "iFlow";
-  const brandLogo = "/assets/iFlow.png";
+  const currentOrgName = "LOS360";
+  const brandLogo = "/images/LOS360-logo.png";
 
   // Breadcrumb dynamic title
   let breadcrumbTitle = "Applications";
@@ -294,7 +294,7 @@ export default function ProtectedLayout({
         {/* Logo area */}
         <div className={`${isSidebarCollapsed ? "px-3 justify-center" : "px-5 justify-between"} h-[70px] border-b border-[#E2E8F0] flex items-center transition-all duration-300`}>
           <Link href={`/${orgSlug}/dashboard`} className={`${isSidebarCollapsed ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100"} flex min-w-0 items-center gap-2.5 overflow-hidden decoration-transparent transition-all duration-200`}>
-            <Image src={brandLogo} alt={currentOrgName} width={210} height={64} className="h-14 max-w-[210px] object-contain" priority />
+            <Image src={brandLogo} alt={currentOrgName} width={130} height={32} className="h-8 max-w-[130px] object-contain" priority />
           </Link>
           <button
             type="button"

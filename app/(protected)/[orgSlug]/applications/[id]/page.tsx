@@ -131,6 +131,7 @@ export default function ApplicationDetailsPage() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewDoc, setPreviewDoc] = useState<{ url: string; type: string; name: string } | null>(null);
   const [isViewing, setIsViewing] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
 
   const [showMoreDetails, setShowMoreDetails] = useState(false);
 
@@ -1145,21 +1146,10 @@ export default function ApplicationDetailsPage() {
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 self-end xl:self-center xl:flex-col xl:items-end xl:gap-1.5">
           <div className="flex items-center gap-2">
             <button className="h-8 px-3 border border-[#E2E8F0] hover:bg-slate-50 text-[11px] font-extrabold text-[#111827] bg-white rounded flex items-center gap-2 cursor-pointer transition-all shadow-xs shrink-0">
-              <Download size={14} className="text-[#64748B]" />
-              <span>Download PDF</span>
-            </button>
-            
-            <button className="h-8 px-3 border border-[#E2E8F0] hover:bg-slate-50 text-[11px] font-extrabold text-[#111827] bg-white rounded flex items-center gap-2 cursor-pointer transition-all shadow-xs shrink-0">
               <span>More Actions</span>
               <ChevronDown size={14} className="text-[#64748B]" />
             </button>
           </div>
-          <button 
-            onClick={() => setIsEditDrawerOpen(true)}
-            className="h-8 min-w-[126px] px-5 bg-[#5F39F8] hover:bg-[#4F2EE0] text-white text-[11px] font-extrabold rounded cursor-pointer transition-all shrink-0 shadow-sm"
-          >
-            {activeTab === "Customer Profile" ? "Edit Customer" : activeTab === "Contact & Address" ? "Edit Contact & Address" : activeTab === "Identity & KYC" ? "Edit Identity & KYC" : activeTab === "Employment / Business" ? "Edit Employment / Business" : activeTab === "Financial Profile" ? "Edit Financial Profile" : activeTab === "Banking Details" ? "Edit Banking Details" : activeTab === "Bureau" ? "Add / Update Bureau Report" : activeTab === "Fraud & Compliance" ? "Edit Fraud & Compliance" : activeTab === "Audit Trail" ? "Filter Audit Trail" : activeTab === "Notes" ? "Add Note" : activeTab === "Communication" ? "New Communication" : "Edit Application"}
-          </button>
         </div>
       </div>
 
@@ -1923,7 +1913,10 @@ export default function ApplicationDetailsPage() {
                     <div>
                       <h3 className="text-sm font-bold text-[#1E293B] border-b border-slate-100 pb-2 mb-3">Quick Actions</h3>
                       <div className="grid grid-cols-1 gap-2">
-                        <button className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg cursor-pointer transition-all">
+                        <button
+                          onClick={() => setIsAssignModalOpen(true)}
+                          className="w-full flex items-center gap-2 px-3 h-8 text-xs font-bold border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg cursor-pointer transition-all"
+                        >
                           <User size={14} className="text-[#94A3B8] shrink-0" />
                           <span>Assign To</span>
                         </button>
@@ -7441,6 +7434,124 @@ export default function ApplicationDetailsPage() {
 
         </div>
       </div>
+
+      {isAssignModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/18 px-4 py-6 backdrop-blur-[1px]">
+          <div className="w-full max-w-[680px] overflow-hidden rounded-xl border border-[#E2E8F0] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.18)]">
+            <div className="flex items-start justify-between px-6 pt-5 pb-3">
+              <div>
+                <h3 className="text-base font-extrabold text-[#0F172A]">Assign To</h3>
+                <p className="mt-2 text-xs font-medium text-[#64748B]">
+                  Select a user or team to assign this application. They will be responsible for the next actions.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsAssignModalOpen(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-xl leading-none text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
+                aria-label="Close assign modal"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="px-6 pb-5 pt-2">
+              <div className="grid grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-3">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-[#1E2A5A]">
+                    Assigned To <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="grid h-10 grid-cols-2 overflow-hidden rounded-lg border border-[#D7DEE9] bg-white">
+                    <label className="flex cursor-pointer items-center gap-2 border-r border-[#E2E8F0] px-3 text-xs font-bold text-[#1E293B]">
+                      <input type="radio" name="assignTarget" defaultChecked className="h-4 w-4 accent-[#5F39F8]" />
+                      <span>User</span>
+                    </label>
+                    <label className="flex cursor-pointer items-center gap-2 px-3 text-xs font-bold text-[#475569]">
+                      <input type="radio" name="assignTarget" className="h-4 w-4 accent-[#5F39F8]" />
+                      <span>Team</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-[#1E2A5A]">
+                    Select Dept <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <select className="h-10 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white px-3 pr-9 text-xs font-semibold text-[#475569] outline-none transition-colors focus:border-[#5F39F8]">
+                      <option>Credit Department</option>
+                      <option>Operations</option>
+                      <option>Risk Team</option>
+                      <option>Branch Team</option>
+                    </select>
+                    <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-[#1E2A5A]">
+                    Search Users <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+                    <input
+                      type="text"
+                      placeholder="Search and select user"
+                      className="h-10 w-full rounded-lg border border-[#D7DEE9] bg-white px-9 text-xs font-semibold text-[#1E293B] outline-none transition-colors placeholder:text-[#64748B] focus:border-[#5F39F8]"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-[#1E2A5A]">
+                    Priority <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <select className="h-10 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white pl-7 pr-9 text-xs font-semibold text-[#1E293B] outline-none transition-colors focus:border-[#5F39F8]">
+                      <option>High</option>
+                      <option>Medium</option>
+                      <option>Low</option>
+                    </select>
+                    <span className="pointer-events-none absolute left-3 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-orange-500" />
+                    <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
+                  </div>
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-xs font-bold text-[#1E2A5A]">Remarks</label>
+                  <div className="relative">
+                    <textarea
+                      placeholder="Enter remarks"
+                      maxLength={500}
+                      className="h-[86px] w-full resize-none rounded-lg border border-[#D7DEE9] bg-white px-3 py-3 text-xs font-semibold text-[#1E293B] outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#5F39F8]"
+                    />
+                    <span className="absolute bottom-2 right-3 text-[10px] font-bold text-[#64748B]">0 / 500</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 flex items-center gap-2 rounded-md bg-[#F1F3FF] px-3 py-3 text-xs font-semibold text-[#2536D8]">
+                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[#2536D8] text-[10px] font-black">i</span>
+                <span>The selected user will be notified and can take action on this application.</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 border-t border-[#F1F5F9] px-6 py-4">
+              <button
+                onClick={() => setIsAssignModalOpen(false)}
+                className="h-9 min-w-[148px] rounded-md border border-[#D7DEE9] bg-white px-5 text-xs font-extrabold text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => setIsAssignModalOpen(false)}
+                className="h-9 min-w-[148px] rounded-md bg-[#5F18F6] px-5 text-xs font-extrabold text-white shadow-sm transition-all hover:bg-[#4F0EDB] cursor-pointer"
+              >
+                Assign
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Modal
         isOpen={isPreviewOpen}

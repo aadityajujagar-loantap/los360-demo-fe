@@ -102,8 +102,8 @@ export default function OrgLoginPage() {
     }
   }
 
-  const logoSrc = "/iFlow.png";
-  const logoAlt = "iFlow";
+  const logoSrc = "/images/LOS360-logo.png";
+  const logoAlt = "LOS360";
   const applyLoanLink = org?.site?.nav?.links.find((link) => link.label.toLowerCase() === "apply loan");
 
   return (

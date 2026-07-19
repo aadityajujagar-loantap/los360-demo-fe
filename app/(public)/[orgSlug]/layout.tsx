@@ -48,8 +48,8 @@ export default function OrgLayout({ children }: { children: React.ReactNode }) {
             {/* Logo */}
             <Link href={`/${orgSlug}`} className="flex items-center gap-3 shrink-0">
               <img
-                src="/assets/iFlow.png"
-                alt="iFlow"
+                src="/images/LOS360-logo.png"
+                alt="LOS360"
                 className={`${isLoginPage ? "h-11" : "h-14"} w-auto max-w-[230px] object-contain`}
               />
             </Link>
