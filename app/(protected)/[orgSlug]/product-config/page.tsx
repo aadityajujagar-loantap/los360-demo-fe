@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import styles from "./product-config.module.css";
 import { get, post, put, del } from "../../../_lib/redux/services/apiClient";
 import { fetchUserRolesPermissions } from "../../../_lib/redux/services/adminApi";
+import { Box, Settings2, TableProperties } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TYPES
@@ -1305,7 +1306,7 @@ export default function ProductConfigPage() {
   return (
     <>
       {/* ═══════════════ TOP HEADER ═══════════════ */}
-      <div className={styles.portalHeader}>
+      <div className={`${styles.portalHeader} flex items-center justify-between`}>
         <div>
           <h5 className={styles.portalHeaderTitle}>
             <i className="bi bi-bank me-2"></i>Product Admin Portal
@@ -1314,6 +1315,7 @@ export default function ProductConfigPage() {
             Loan Product Configuration &amp; Scheme Management
           </span>
         </div>
+        <div id="portal-header-actions"></div>
       </div>
 
       {/* ═══════════════ STEP NAV ═══════════════ */}
@@ -1324,7 +1326,8 @@ export default function ProductConfigPage() {
               className={`${styles.navLink} ${activeTab === 1 ? styles.navLinkActive : ""}`}
               onClick={() => setActiveTab(1)}
             >
-              <span className={styles.stepNum}>1</span>Product Type
+              <span className={styles.navIcon}><Box size={14} /></span>
+              <span>Product Type</span>
             </button>
           </li>
           <li className={styles.navItem}>
@@ -1332,7 +1335,8 @@ export default function ProductConfigPage() {
               className={`${styles.navLink} ${activeTab === 2 ? styles.navLinkActive : ""}`}
               onClick={() => setActiveTab(2)}
             >
-              <span className={styles.stepNum}>2</span>Scheme Parameters
+              <span className={styles.navIcon}><Settings2 size={14} /></span>
+              <span>Scheme Parameters</span>
             </button>
           </li>
           <li className={styles.navItem}>
@@ -1340,7 +1344,8 @@ export default function ProductConfigPage() {
               className={`${styles.navLink} ${activeTab === 3 ? styles.navLinkActive : ""}`}
               onClick={() => setActiveTab(3)}
             >
-              <span className={styles.stepNum}>3</span>Slab Configuration
+              <span className={styles.navIcon}><TableProperties size={14} /></span>
+              <span>Slab Configuration</span>
             </button>
           </li>
         </ul>

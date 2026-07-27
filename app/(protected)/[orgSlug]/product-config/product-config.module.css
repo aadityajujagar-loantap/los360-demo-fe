@@ -1736,3 +1736,613 @@
 .btnEditCancel:hover {
   background: #f8fafc;
 }
+
+/* Loan Products admin-app revamp */
+.portalHeader {
+  position: relative;
+  padding: 0.9rem 1.25rem 0.85rem !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+}
+
+.portalHeaderTitle {
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: 1.15rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+.portalHeaderSubtitle {
+  color: #64748b !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+}
+
+.portalHeader :global(#portal-header-actions) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stepNav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  margin: 0 !important;
+  padding: 0 1.25rem !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-radius: 0 !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(10px);
+}
+
+.navTabs {
+  display: flex !important;
+  align-items: center;
+  gap: 1.4rem !important;
+  min-height: 3rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.navTabs::-webkit-scrollbar {
+  display: none;
+}
+
+.navItem {
+  flex: 0 0 auto;
+}
+
+.navLink {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.45rem !important;
+  min-height: 3rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #475569 !important;
+  font-size: 0.76rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  white-space: nowrap;
+}
+
+.navLink::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  border-radius: 999px 999px 0 0;
+  background: transparent;
+  content: "";
+}
+
+.navLink:hover {
+  background: transparent !important;
+  color: #1e293b !important;
+}
+
+.navLinkActive {
+  color: #5f39f8 !important;
+}
+
+.navLinkActive::after {
+  background: #5f39f8;
+}
+
+.navIcon,
+.stepNum {
+  display: inline-flex;
+  width: 1.55rem;
+  height: 1.55rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.navLinkActive .navIcon,
+.navLinkActive .stepNum {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+  color: #5f39f8;
+}
+
+.containerFluid {
+  min-height: calc(100vh - 7rem) !important;
+  padding: 1rem 1.25rem 1.25rem !important;
+  background: #f8fafc !important;
+}
+
+.rowG3,
+.rowG2 {
+  gap: 0.85rem !important;
+  margin-bottom: 0.85rem !important;
+}
+
+.configCard,
+.tab3Container {
+  margin-bottom: 0.85rem !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+  overflow: hidden;
+}
+
+.configCard:hover,
+.tab3Container:hover {
+  border-color: #cbd5e1 !important;
+}
+
+.cardHeader,
+.tab3Header {
+  min-height: 3.15rem;
+  padding: 0.85rem 1rem !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  font-size: 0.84rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+.cardHeader h1,
+.cardHeader h2,
+.cardHeader h3,
+.cardHeader h4,
+.cardHeader h5,
+.cardHeader h6,
+.cardHeader span,
+.cardHeader .tab3Title {
+  color: #111827 !important;
+}
+
+.cardHeader p,
+.cardHeader .portalHeaderSubtitle {
+  color: #64748b !important;
+}
+
+.cardBody {
+  padding: 1rem !important;
+}
+
+.badgeSub {
+  display: inline-flex;
+  min-height: 1.25rem;
+  align-items: center;
+  border: 1px solid #c7d2fe;
+  border-radius: 999px !important;
+  background: #eef2ff !important;
+  color: #5f39f8 !important;
+  font-size: 0.66rem !important;
+  font-weight: 900 !important;
+}
+
+.addProductForm,
+.commentSection {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  background: #f8fafc !important;
+  box-shadow: none !important;
+}
+
+.addProductForm {
+  padding: 1rem !important;
+}
+
+.addFormTitle,
+.groupLabel,
+.listHeader {
+  border-bottom-color: #e2e8f0 !important;
+  color: #111827 !important;
+  font-size: 0.8rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+.formGroup {
+  margin-bottom: 0.85rem !important;
+}
+
+.formLabel,
+.commentLabel,
+.schemeSelectorLabel,
+.fieldLabel,
+.modalLabel {
+  color: #475569 !important;
+  font-size: 0.72rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+.formControl,
+.formTextarea,
+.formSelect,
+.formControlInput,
+.formControlNarrow,
+.formControlMedium,
+.searchInput,
+.modalSelect,
+.modalInput,
+.modalTextarea {
+  min-height: 2.35rem;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #1e293b !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+}
+
+.formControl:focus,
+.formTextarea:focus,
+.formSelect:focus,
+.formControlInput:focus,
+.formControlNarrow:focus,
+.formControlMedium:focus,
+.searchInput:focus,
+.modalSelect:focus,
+.modalInput:focus,
+.modalTextarea:focus {
+  border-color: #5f39f8 !important;
+  box-shadow: 0 0 0 3px rgba(95, 57, 248, 0.12) !important;
+  outline: none !important;
+}
+
+.inputGroup,
+.inputGroupSm,
+.inputGroupNarrow {
+  gap: 0;
+}
+
+.inputGroupText {
+  min-height: 2.35rem;
+  border-color: #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #64748b !important;
+  font-size: 0.75rem !important;
+  font-weight: 900 !important;
+}
+
+.fieldRow {
+  gap: 0.75rem;
+  padding: 0.75rem 0 !important;
+  border-bottom-color: #f1f5f9 !important;
+}
+
+.fieldControl {
+  min-width: 0;
+}
+
+.schemeSelector {
+  align-items: stretch !important;
+  gap: 0.85rem;
+  margin-bottom: 0.85rem !important;
+  padding: 0.85rem !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+}
+
+.schemeSelectorLeft {
+  min-width: 0;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+.schemeSelectorRight {
+  color: #64748b !important;
+  font-weight: 800;
+}
+
+.btnAddNew,
+.btnAddNewPrimary,
+.btnPrimary,
+.btnSuccess,
+.btnEditSave {
+  display: inline-flex !important;
+  min-height: 2.35rem !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: #5f39f8 !important;
+  color: #ffffff !important;
+  font-size: 0.76rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  box-shadow: 0 1px 2px rgba(95, 57, 248, 0.16) !important;
+}
+
+.btnAddNew:hover,
+.btnAddNewPrimary:hover,
+.btnPrimary:hover,
+.btnSuccess:hover,
+.btnEditSave:hover {
+  background: #4f2ee0 !important;
+  color: #ffffff !important;
+}
+
+.btnAddNew:disabled,
+.btnAddNewPrimary:disabled,
+.btnPrimary:disabled,
+.btnSuccess:disabled,
+.btnEditSave:disabled {
+  cursor: not-allowed;
+  background: #cbd5e1 !important;
+  box-shadow: none !important;
+}
+
+.btnOutlinePrimary,
+.btnEditCancel {
+  display: inline-flex !important;
+  min-height: 2.35rem !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+  font-size: 0.76rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+}
+
+.btnOutlinePrimary:hover,
+.btnEditCancel:hover {
+  border-color: #c7d2fe !important;
+  background: #eef2ff !important;
+  color: #5f39f8 !important;
+}
+
+.btnIconEdit,
+.btnIconDelete,
+.btnDeleteRow {
+  width: 2rem !important;
+  height: 2rem !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #64748b !important;
+}
+
+.btnIconEdit:hover {
+  border-color: #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+.btnIconDelete:hover,
+.btnDeleteRow:hover {
+  border-color: #fecaca !important;
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
+.addRowBtn {
+  min-height: 2.45rem;
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #5f39f8 !important;
+  font-weight: 900 !important;
+}
+
+.addRowBtn:hover {
+  border-color: #c7d2fe !important;
+  background: #eef2ff !important;
+}
+
+.alertWarning {
+  border-color: #fde68a !important;
+  border-radius: 8px !important;
+  background: #fffbeb !important;
+  color: #92400e !important;
+  font-weight: 800;
+}
+
+.legend {
+  margin-bottom: 0.85rem !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+}
+
+.legendSuccess,
+.legendPrimary,
+.legendWarning,
+.legendDanger,
+.badgeSuccess,
+.badgePrimary,
+.badgeWarning,
+.badgeDanger,
+.badgeSecondary {
+  border-radius: 999px !important;
+  font-size: 0.7rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+.tableResponsive {
+  margin-bottom: 0.85rem !important;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.masterTable,
+.slabTable,
+.cardBody table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  font-size: 0.8rem !important;
+}
+
+.masterTable thead th,
+.slabTable thead th,
+.cardBody table thead th {
+  border: 0 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #64748b !important;
+  font-size: 0.68rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  text-transform: uppercase !important;
+}
+
+.masterTable tbody td,
+.slabTable tbody td,
+.cardBody table tbody td {
+  border: 0 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  color: #334155;
+  font-size: 0.8rem !important;
+  font-weight: 700;
+}
+
+.masterTable tbody tr:hover,
+.slabTable tbody tr:hover,
+.cardBody table tbody tr:hover {
+  background: #f8fafc !important;
+}
+
+.schemeGroup td {
+  background: #f8fafc !important;
+  color: #5f39f8 !important;
+}
+
+.slabAmtCell {
+  background: #f8fafc !important;
+}
+
+.tableFootnotes {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #64748b !important;
+  font-weight: 800;
+}
+
+.tab3Container {
+  padding: 0 !important;
+}
+
+.tab3Header {
+  margin-bottom: 0 !important;
+}
+
+.tab3Title {
+  color: #111827 !important;
+  font-size: 0.95rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+.tab3Actions {
+  align-items: center;
+  gap: 0.5rem !important;
+}
+
+.modalOverlay {
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(4px);
+}
+
+.modalDialog {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22) !important;
+}
+
+.modalHeader {
+  min-height: 3.25rem;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-radius: 8px 8px 0 0 !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+.modalTitle {
+  color: #111827 !important;
+  font-size: 0.95rem !important;
+  font-weight: 900 !important;
+}
+
+.modalClose {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #64748b !important;
+}
+
+.modalClose:hover {
+  background: #f8fafc !important;
+  color: #111827 !important;
+}
+
+.modalBody {
+  background: #ffffff !important;
+}
+
+.modalFooter {
+  border-top: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+}
+
+@media (max-width: 992px) {
+  .portalHeader {
+    align-items: flex-start !important;
+    gap: 0.75rem;
+  }
+
+  .stepNav {
+    padding: 0 0.85rem !important;
+  }
+
+  .navTabs {
+    gap: 1rem !important;
+  }
+
+  .containerFluid {
+    padding: 0.85rem !important;
+  }
+
+  .schemeSelector,
+  .schemeSelectorLeft,
+  .tab3Header {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .fieldRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .fieldLabel {
+    flex: 0 0 auto;
+  }
+}
