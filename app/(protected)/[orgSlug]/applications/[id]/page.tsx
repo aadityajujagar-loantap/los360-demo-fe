@@ -6,10 +6,12 @@ import { get, post } from "@/app/_lib/redux/services/apiClient";
 import { orgs, OrgSlug } from "@/app/_config/orgs";
 import Modal from "@/app/_components/ui/Modal";
 import EquifaxReportFull from "@/app/_components/ui/EquifaxReportFull";
+import { formatDisplayedApplicationId } from "@/app/_lib/applicationId";
 import { Download, UploadCloud, Eye, ChevronRight, User, AlertCircle, FileText, Activity, ShieldCheck, Search, MapPin, Phone, Mail, Award, CheckCircle2, ChevronDown, ChevronUp, Copy, ExternalLink, CreditCard, Mars, Venus, RefreshCw, Link as LinkIcon, Calendar, Building2, FileEdit, Heart, Briefcase, Landmark, Wallet, Receipt, TrendingDown, PieChart, Lock, Filter, MessageSquare, MessageCircle, Globe, ArrowUpRight, ArrowDownLeft, Send, Trash2 } from "lucide-react";
 import { load as loadCashfreeSDK } from "@cashfreepayments/cashfree-js";
 
 type Tab = "Overview" | "Customer Profile" | "Contact & Address" | "Co-Applicants" | "Documents" | "Upload Documents" | "Identity & KYC" | "Employment / Business" | "Financial Profile" | "Banking Details" | "Bureau" | "Fraud & Compliance" | "Audit Trail" | "Notes" | "Communication" | "Status History" | "Decision" | "Audit / Logs" | "CBS APIs" | "NACH" | "Equifax";
+type CommunicationPanel = "communication" | "audit" | "notes";
 
 const STATUS_CLASSES: Record<string, string> = {
   submitted: "bg-[var(--primary-light,#f0f4ff)] text-[var(--primary,#2e3192)] border border-[var(--primary,#2e3192)]/20",
@@ -25,6 +27,7 @@ export default function ApplicationDetailsPage() {
   const { orgSlug, id } = useParams<{ orgSlug: string; id: string }>();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("Overview");
+  const [communicationPanel, setCommunicationPanel] = useState<CommunicationPanel>("communication");
   const [selectedCoappIndex, setSelectedCoappIndex] = useState(0);
   const [coappSubTab, setCoappSubTab] = useState<"co-applicant" | "guarantor">("co-applicant");
   const [isAddingCoapp, setIsAddingCoapp] = useState(false);
@@ -132,6 +135,7 @@ export default function ApplicationDetailsPage() {
   const [previewDoc, setPreviewDoc] = useState<{ url: string; type: string; name: string } | null>(null);
   const [isViewing, setIsViewing] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [isCustomersModalOpen, setIsCustomersModalOpen] = useState(false);
 
   const [showMoreDetails, setShowMoreDetails] = useState(false);
 
@@ -874,6 +878,50 @@ export default function ApplicationDetailsPage() {
   }
 
   const status = (appData.status || "submitted").toLowerCase();
+  const applicantName = `${appData.first_name || "Aniket"} ${appData.last_name || "Mehta"}`.trim();
+  const customerRows = [
+    {
+      role: "Primary Applicant",
+      name: applicantName,
+      relation: "Self",
+      customerId: appData.customer_id || "CUST00012345",
+      contact: `${appData.mobile || "9800001001"}  •  ${appData.email || "aniket.mehta@example.com"}`,
+      initials: applicantName.split(" ").map((part: string) => part[0]).join("").slice(0, 2).toUpperCase() || "AM",
+      bureau: appData.bureau_score || appData.score || "765",
+      income: appData.monthly_income ? `₹${Number(appData.monthly_income).toLocaleString("en-IN")}/month` : "₹85,000/month",
+      kyc: "KYC Complete",
+      accent: "indigo",
+    },
+    {
+      role: "Co-Applicant",
+      name: "Neha Mehta",
+      relation: "Spouse",
+      customerId: "CUST00012346",
+      contact: "98••••2204  •  neha.mehta@example.com",
+      initials: "NM",
+      bureau: "742",
+      income: "₹45,000/month",
+      kyc: "KYC Complete",
+      accent: "teal",
+    },
+    {
+      role: "Guarantor",
+      name: "Rajesh Sharma",
+      relation: "Family Friend",
+      customerId: "CUST00012347",
+      contact: "97••••4812  •  rajesh.sharma@example.com",
+      initials: "RS",
+      bureau: "698",
+      income: "₹75,000/month",
+      kyc: "KYC Pending",
+      accent: "amber",
+    },
+  ];
+  const customerAccentClasses = {
+    indigo: { rail: "border-l-[#6D28D9]", badge: "bg-[#F1EEFF] text-[#5F39F8]", avatar: "bg-[#EEF2FF] text-[#5F39F8]" },
+    teal: { rail: "border-l-teal-500", badge: "bg-teal-50 text-teal-700", avatar: "bg-teal-50 text-teal-700" },
+    amber: { rail: "border-l-orange-500", badge: "bg-orange-50 text-orange-600", avatar: "bg-amber-100 text-amber-900" },
+  } as const;
 
   const getDocumentCategoryClass = (category: string) => {
     if (category.includes("KYC")) return { dot: "bg-green-500", heading: "text-green-600", header: "bg-green-50/50" };
@@ -955,6 +1003,61 @@ export default function ApplicationDetailsPage() {
   const { label: scoreLabel, color: scoreColor } = getCibilScoreMeta(scoreVal);
 
   const hiddenSubTabs: Tab[] = ["Equifax", "Status History", "Decision", "Audit / Logs"];
+  const showApplicantSideRail = activeTab !== "Communication";
+  const subTabLabels: Partial<Record<Tab, string>> = {
+    "Customer Profile": "Customer",
+    "Contact & Address": "Contacts",
+    "Co-Applicants": "Co-Applicants / Guarantors",
+    "Identity & KYC": "KYC",
+    "Employment / Business": "Occupation",
+    "Financial Profile": "Financial",
+    "Banking Details": "Banking",
+    "Fraud & Compliance": "Complience",
+  };
+  const getSubTabLabel = (tab: Tab) => subTabLabels[tab] ?? tab;
+  const communicationPanelTabs: Array<{ id: CommunicationPanel; label: string; helper: string; count: string; icon: React.ElementType }> = [
+    { id: "communication", label: "Communication", helper: "Customer touchpoints", count: "48", icon: MessageCircle },
+    { id: "audit", label: "Audit Trails", helper: "System activity", count: "14", icon: Activity },
+    { id: "notes", label: "Notes", helper: "Internal comments", count: "18", icon: MessageSquare },
+  ];
+  const renderCommunicationPanelSwitcher = () => (
+    <div className="rounded-xl border border-[#E2E8F0] bg-white p-3 shadow-sm">
+      <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+        <div>
+          <h3 className="text-base font-bold text-[#1E293B]">Communication Workspace</h3>
+          <p className="mt-0.5 text-xs font-medium text-[#64748B]">Switch between customer communication, audit trails, and internal notes.</p>
+        </div>
+        <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3 xl:w-[620px]">
+          {communicationPanelTabs.map(({ id, label, helper, count, icon: Icon }) => {
+            const isActive = communicationPanel === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setCommunicationPanel(id)}
+                className={`flex min-h-[58px] items-center gap-2 rounded-lg border px-3 py-2 text-left transition-all cursor-pointer ${
+                  isActive
+                    ? "border-[#5F39F8] bg-[#F6F4FF] text-[#4F2EE0] shadow-sm"
+                    : "border-[#E2E8F0] bg-[#F8FAFC] text-[#475569] hover:border-[#C7D2FE] hover:bg-white"
+                }`}
+              >
+                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${isActive ? "bg-[#5F39F8] text-white" : "bg-white text-[#64748B]"}`}>
+                  <Icon size={15} />
+                </span>
+                <span className="min-w-0">
+                  <span className="flex items-center gap-2 text-xs font-extrabold text-[#1E293B]">
+                    {label}
+                    <span className={`rounded-full px-1.5 py-0.5 text-[10px] ${isActive ? "bg-white text-[#5F39F8]" : "bg-slate-200/70 text-[#64748B]"}`}>{count}</span>
+                  </span>
+                  <span className="mt-0.5 block truncate text-[10px] font-semibold text-[#64748B]">{helper}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
   const isGuarantorEntry = (coapp: any) => coapp?.relationship === "Guarantor";
 
   const handleRemoveCoapplicant = (targetCoapp: any) => {
@@ -979,11 +1082,14 @@ export default function ApplicationDetailsPage() {
     const allNavigationTabs: Tab[] = ([
       "Overview", "Contact & Address", "Co-Applicants", "Documents",
       "Identity & KYC", "Employment / Business", "Financial Profile", "Banking Details",
-      "Bureau", "Fraud & Compliance", "Audit Trail", "Notes", "Communication",
+      "Bureau", "Fraud & Compliance", "Communication",
       "NACH", "Equifax", "CBS APIs", "Status History", "Decision", "Audit / Logs"
     ] as Tab[]).filter((tab) => !hiddenSubTabs.includes(tab));
 
-    const estimateTabWidth = (tab: Tab) => Math.min(180, Math.max(74, tab.length * 7 + 34));
+    const estimateTabWidth = (tab: Tab) => {
+      const label = getSubTabLabel(tab);
+      return Math.min(180, Math.max(74, label.length * 7 + 34));
+    };
     const availableWidth = Math.max(220, (subTabsBarWidth || windowWidth) - 8);
     const moreButtonWidth = 82;
     let usedWidth = 0;
@@ -1020,7 +1126,7 @@ export default function ApplicationDetailsPage() {
                   className={`px-2.5 py-2 xl:px-3.5 xl:py-2.5 text-[11px] font-bold transition-all relative whitespace-nowrap cursor-pointer shrink-0
                     ${isActive ? "text-[#5F39F8] bg-white translate-y-[1px]" : "text-slate-400 hover:text-slate-650 bg-white"}`}
                 >
-                  {tab}
+                  {getSubTabLabel(tab)}
                   {isActive && <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#5F39F8] rounded-t-full" />}
                 </button>
               );
@@ -1060,7 +1166,7 @@ export default function ApplicationDetailsPage() {
                       className={`w-full text-left px-4 py-2 text-xs font-bold transition-all hover:bg-slate-50 cursor-pointer
                         ${isActive ? "text-[#5F39F8] bg-indigo-50/20" : "text-slate-600 hover:text-slate-800"}`}
                     >
-                      {tab}
+                      {getSubTabLabel(tab)}
                     </button>
                   );
                 })}
@@ -1081,10 +1187,10 @@ export default function ApplicationDetailsPage() {
           <div>
             <div className="text-[10px] font-bold text-[#64748B]">Application ID</div>
             <div className="flex items-center gap-2 mt-1.5">
-              <span className="text-lg font-extrabold leading-none text-[#111827]">APP{appData.lapp_id}</span>
+              <span className="text-lg font-extrabold leading-none text-[#111827]">{formatDisplayedApplicationId(appData.lapp_id)}</span>
               <button 
                 onClick={() => {
-                  navigator.clipboard.writeText(`APP${appData.lapp_id}`);
+                  navigator.clipboard.writeText(formatDisplayedApplicationId(appData.lapp_id));
                   alert("Copied to clipboard!");
                 }}
                 className="text-[#94A3B8] hover:text-[#1E293B] cursor-pointer"
@@ -1157,14 +1263,14 @@ export default function ApplicationDetailsPage() {
         const allNavigationTabs: Tab[] = [
           "Overview", "Customer Profile", "Contact & Address", "Identity & KYC",
           "Employment / Business", "Financial Profile", "Banking Details", "Co-Applicants", "Documents",
-          "Bureau", "Fraud & Compliance", "Audit Trail", "Notes", "Communication",
+          "Bureau", "Fraud & Compliance", "Communication",
           "NACH", "Equifax", "CBS APIs", "Status History", "Decision", "Audit / Logs"
         ];
         const estimateTopTabWidth = (tab: Tab) => {
-          const textWidth = tab.length * 7.4;
+          const textWidth = getSubTabLabel(tab).length * 7.4;
           return Math.min(195, Math.max(68, textWidth + 32));
         };
-        const tabRowGap = windowWidth >= 1280 ? 32 : windowWidth >= 640 ? 24 : 16;
+        const tabRowGap = windowWidth >= 1280 ? 28 : windowWidth >= 640 ? 20 : 14;
         const tabToggleReserve = 112 + tabRowGap + 14;
         const getVisibleCount = () => {
           const measuredWidth = subTabsBarWidth || windowWidth;
@@ -1219,7 +1325,7 @@ export default function ApplicationDetailsPage() {
           <div ref={subTabsContainerRef} className="sticky top-0 z-30 -mx-2.5 mb-2.5 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 lg:-mx-3 lg:px-6 xl:-mx-4 xl:px-8 overflow-visible">
             <div className="relative h-12 overflow-visible">
               <div
-                className="flex h-12 items-center gap-4 overflow-visible sm:gap-6 xl:gap-8"
+                className="flex h-12 items-center gap-3.5 overflow-visible sm:gap-5 xl:gap-7"
                 style={dropdownTabs.length > 0 ? { width: `calc(100% - ${topTabLaneRightReserve}px)` } : undefined}
               >
                 {primaryTabs.map((tab) => {
@@ -1234,7 +1340,7 @@ export default function ApplicationDetailsPage() {
                       className={`relative inline-flex h-full shrink-0 items-center gap-2 whitespace-nowrap text-[12px] font-extrabold transition-all cursor-pointer ${isActive ? "text-[#5F39F8]" : "text-[#475569] hover:text-[#1E293B]"}`}
                     >
                       <span className={isActive ? "text-[#5F39F8]" : "text-[#64748B]"}>{tabIcons[tab]}</span>
-                      <span>{tab}</span>
+                      <span>{getSubTabLabel(tab)}</span>
                       {isActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[#5F39F8]" />}
                     </button>
                   );
@@ -1266,7 +1372,7 @@ export default function ApplicationDetailsPage() {
                           className={`flex w-full items-center gap-2 px-4 py-2 text-left text-xs font-bold transition-all hover:bg-slate-50 cursor-pointer ${activeTab === tab ? "bg-indigo-50/30 text-[#5F39F8]" : "text-slate-600 hover:text-slate-800"}`}
                         >
                           <span className={activeTab === tab ? "text-[#5F39F8]" : "text-[#64748B]"}>{tabIcons[tab]}</span>
-                          <span>{tab}</span>
+                          <span>{getSubTabLabel(tab)}</span>
                         </button>
                       ))}
                     </div>
@@ -1280,7 +1386,8 @@ export default function ApplicationDetailsPage() {
 
 
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row gap-2.5 items-stretch overflow-visible lg:overflow-hidden pt-0">
-        {/* Left Sidebar - Always shown */}
+        {/* Applicant side rail */}
+        {showApplicantSideRail && (
         <aside className="w-full lg:h-full lg:w-60 xl:w-64 shrink-0 space-y-2.5 overflow-visible lg:overflow-y-auto pr-0 lg:pr-1 z-20 custom-scrollbar lg:pb-4">
             <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col items-center">
             {/* Applicant Profile Card */}
@@ -1579,6 +1686,7 @@ export default function ApplicationDetailsPage() {
               </div>
             </div>
         </aside>
+        )}
 
         {/* Right Main Content */}
         <div className="flex-1 min-w-0 min-h-0 flex flex-col overflow-visible lg:overflow-y-auto custom-scrollbar pr-0 lg:pr-1 lg:pb-4">
@@ -1588,7 +1696,7 @@ export default function ApplicationDetailsPage() {
             const allNavigationTabs: Tab[] = [
               "Overview", "Contact & Address", "Co-Applicants", "Documents", 
               "Identity & KYC", "Employment / Business", "Financial Profile", "Banking Details", 
-              "Bureau", "Fraud & Compliance", "Audit Trail", "Notes", "Communication", 
+              "Bureau", "Fraud & Compliance", "Communication",
               "NACH", "Equifax", "CBS APIs", "Status History", "Decision", "Audit / Logs"
             ];
             
@@ -1841,7 +1949,10 @@ export default function ApplicationDetailsPage() {
                       </div>
                     </div>
                   </div>
-                  <button className="w-full h-9 border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg cursor-pointer transition-all flex items-center justify-center gap-2 mt-4">
+                  <button
+                    onClick={() => setIsCustomersModalOpen(true)}
+                    className="w-full h-9 border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-lg cursor-pointer transition-all flex items-center justify-center gap-2 mt-4"
+                  >
                     View All Customers
                   </button>
                 </div>
@@ -6520,12 +6631,13 @@ export default function ApplicationDetailsPage() {
             </div>
           )}
 
-          {activeTab === "Audit Trail" && (
+          {(activeTab === "Audit Trail" || (activeTab === "Communication" && communicationPanel === "audit")) && (
             <div className="space-y-2.5 animate-fade-slide-up">
+              {activeTab === "Communication" && renderCommunicationPanelSwitcher()}
 
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <h3 className="text-lg font-bold text-[#1E293B]">Audit Trail</h3>
+                  <h3 className="text-lg font-bold text-[#1E293B]">Audit Trails</h3>
                   <p className="text-xs text-[#64748B] font-medium mt-0.5">Complete history of activities performed on this application.</p>
                 </div>
                 <button className="h-8 px-4 border border-[#5F39F8] text-[#5F39F8] hover:bg-indigo-50 text-xs font-bold rounded-lg cursor-pointer transition-all flex items-center gap-2">
@@ -6535,19 +6647,19 @@ export default function ApplicationDetailsPage() {
 
               <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
                 <div className="overflow-x-auto custom-scrollbar">
-                  <table className="min-w-[1320px] w-full table-fixed text-left text-[11px]">
+                  <table className="w-full table-fixed text-left text-[11px]">
                   <thead className="bg-[#F8FAFC] text-[#64748B] font-bold border-b border-[#E2E8F0] uppercase tracking-[0.02em]">
                     <tr>
-                      <th className="w-12 px-3 py-2.5 whitespace-nowrap">#</th>
-                      <th className="w-44 px-3 py-2.5 whitespace-nowrap">Date & Time <span className="text-[#5F39F8] inline-block font-black ml-1">&#8595;</span></th>
-                      <th className="w-36 px-3 py-2.5 whitespace-nowrap">Performed By</th>
-                      <th className="w-32 px-3 py-2.5 whitespace-nowrap">Role</th>
-                      <th className="w-40 px-3 py-2.5 whitespace-nowrap">Module</th>
-                      <th className="w-44 px-3 py-2.5 whitespace-nowrap">Activity</th>
-                      <th className="w-48 px-3 py-2.5 whitespace-nowrap">Field Name / Section</th>
-                      <th className="w-36 px-3 py-2.5 whitespace-nowrap">Old Value</th>
-                      <th className="w-44 px-3 py-2.5 whitespace-nowrap">New Value</th>
-                      <th className="w-32 px-3 py-2.5 whitespace-nowrap">IP Address</th>
+                      <th className="w-[4%] px-2 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap">#</th>
+                      <th className="w-[13%] px-2 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap">Date & Time <span className="text-[#5F39F8] inline-block font-black ml-1">&#8595;</span></th>
+                      <th className="w-[10%] px-2 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap">Performed By</th>
+                      <th className="w-[8%] px-2 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap">Role</th>
+                      <th className="w-[11%] px-2 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap">Module</th>
+                      <th className="w-[12%] px-2 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap">Activity</th>
+                      <th className="w-[15%] px-2 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap">Field / Section</th>
+                      <th className="w-[9%] px-2 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap">Old Value</th>
+                      <th className="w-[10%] px-2 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap">New Value</th>
+                      <th className="w-[8%] px-2 py-2.5 overflow-hidden text-ellipsis whitespace-nowrap">IP Address</th>
                     </tr>
                   </thead>
                   <tbody className="text-[#1E293B] font-bold divide-y divide-[#F1F5F9]">
@@ -6568,16 +6680,16 @@ export default function ApplicationDetailsPage() {
                       { id: "14", date: "16 May 2024, 11:20 AM", user: "Arjun Singh", role: "Super Admin", module: "Alerts & Notifications", activity: "Alert Acknowledged", field: "Income Mismatch Alert", old: "-", new: "Acknowledged", ip: "10.1.2.45" },
                     ].map((row) => (
                       <tr key={row.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-3 py-2.5 text-[#64748B] whitespace-nowrap">{row.id}</td>
-                        <td className="px-3 py-2.5 whitespace-nowrap">{row.date}</td>
-                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.user}>{row.user}</td>
-                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.role}>{row.role}</td>
-                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.module}>{row.module}</td>
-                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.activity}>{row.activity}</td>
-                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.field}>{row.field}</td>
-                        <td className="px-3 py-2.5 whitespace-nowrap truncate" title={row.old}>{row.old}</td>
-                        <td className="px-3 py-2.5 whitespace-nowrap truncate" title={row.new}>{row.new}</td>
-                        <td className="px-3 py-2.5 text-[#64748B] font-medium whitespace-nowrap">{row.ip}</td>
+                        <td className="px-2 py-2.5 text-[#64748B] whitespace-nowrap">{row.id}</td>
+                        <td className="px-2 py-2.5 whitespace-nowrap overflow-hidden text-ellipsis" title={row.date}>{row.date}</td>
+                        <td className="px-2 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.user}>{row.user}</td>
+                        <td className="px-2 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.role}>{row.role}</td>
+                        <td className="px-2 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.module}>{row.module}</td>
+                        <td className="px-2 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.activity}>{row.activity}</td>
+                        <td className="px-2 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.field}>{row.field}</td>
+                        <td className="px-2 py-2.5 whitespace-nowrap truncate" title={row.old}>{row.old}</td>
+                        <td className="px-2 py-2.5 whitespace-nowrap truncate" title={row.new}>{row.new}</td>
+                        <td className="px-2 py-2.5 text-[#64748B] font-medium whitespace-nowrap truncate" title={row.ip}>{row.ip}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -6613,8 +6725,9 @@ export default function ApplicationDetailsPage() {
             </div>
           )}
 
-          {activeTab === "Notes" && (
+          {(activeTab === "Notes" || (activeTab === "Communication" && communicationPanel === "notes")) && (
             <div className="space-y-2.5 animate-fade-slide-up">
+              {activeTab === "Communication" && renderCommunicationPanelSwitcher()}
 
               <div className="flex items-center justify-between mb-2">
                 <div>
@@ -6724,8 +6837,9 @@ export default function ApplicationDetailsPage() {
             </div>
           )}
 
-          {activeTab === "Communication" && (
+          {activeTab === "Communication" && communicationPanel === "communication" && (
             <div className="space-y-2.5 animate-fade-slide-up">
+              {renderCommunicationPanelSwitcher()}
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <h3 className="text-lg font-bold text-[#1E293B]">Communication</h3>
@@ -7400,6 +7514,138 @@ export default function ApplicationDetailsPage() {
 
         </div>
       </div>
+
+      {isCustomersModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/28 px-3 py-4 backdrop-blur-[2px]">
+          <div className="max-h-[calc(100vh-2rem)] w-full max-w-[1000px] overflow-hidden rounded-xl border border-[#E2E8F0] bg-white shadow-[0_24px_70px_rgba(15,23,42,0.22)]">
+            <div className="flex items-start justify-between px-5 pt-4 pb-3">
+              <div>
+                <h3 className="text-lg font-extrabold text-[#0F172A]">Customers in Application</h3>
+                <p className="mt-1 text-xs font-medium text-[#475569]">
+                  Review applicants, co-applicants and guarantors linked to this loan application.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsCustomersModalOpen(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-lg leading-none text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
+                aria-label="Close customers modal"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="px-5 pb-4">
+              <div className="mb-3 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-extrabold text-[#0F172A]">
+                  {[
+                    { label: "Total Customers", value: 3, icon: User, color: "text-[#5F39F8] bg-[#F1EEFF]" },
+                    { label: "Applicant", value: 1, icon: User, color: "text-[#5F39F8] bg-[#F1EEFF]" },
+                    { label: "Co-Applicant", value: 1, icon: User, color: "text-teal-600 bg-teal-50" },
+                    { label: "Guarantor", value: 1, icon: ShieldCheck, color: "text-orange-500 bg-orange-50" },
+                  ].map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={item.label} className="flex items-center gap-1.5">
+                        <span className={`flex h-5 w-5 items-center justify-center rounded-md ${item.color}`}>
+                          <Icon size={12} />
+                        </span>
+                        <span>{item.label}</span>
+                        <span className="font-black">{item.value}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="relative w-full lg:w-[238px]">
+                  <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+                  <input
+                    type="text"
+                    placeholder="Search customer"
+                    className="h-9 w-full rounded-lg border border-[#CBD5E1] bg-white pl-9 pr-3 text-xs font-semibold text-[#1E293B] outline-none transition-colors placeholder:text-[#64748B] focus:border-[#5F39F8]"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {customerRows.map((customer) => {
+                  const accent = customerAccentClasses[customer.accent as keyof typeof customerAccentClasses];
+                  const isPending = customer.kyc.includes("Pending");
+                  return (
+                    <div
+                      key={customer.customerId}
+                      className={`grid grid-cols-1 gap-3 rounded-lg border border-[#DDE5F0] border-l-4 ${accent.rail} bg-white p-3 shadow-sm lg:grid-cols-[minmax(240px,1.5fr)_minmax(128px,0.72fr)_minmax(112px,0.62fr)_minmax(110px,0.58fr)_146px] lg:items-center`}
+                    >
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-extrabold ${accent.avatar}`}>
+                          {customer.initials}
+                        </div>
+                        <div className="min-w-0">
+                          <span className={`inline-flex rounded-md px-1.5 py-0.5 text-[10px] font-extrabold ${accent.badge}`}>
+                            {customer.role}
+                          </span>
+                          <h4 className="mt-1 text-sm font-extrabold text-[#0F172A]">{customer.name}</h4>
+                          <p className="mt-0.5 truncate text-[11px] font-semibold text-[#475569]">
+                            {customer.relation}  •  Customer ID: {customer.customerId}
+                          </p>
+                          <p className="mt-0.5 truncate text-[11px] font-semibold text-[#64748B]">{customer.contact}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1.5 border-[#E2E8F0] lg:border-l lg:pl-4">
+                        <div className={`flex items-center gap-1.5 text-[11px] font-bold ${isPending ? "text-orange-600" : "text-[#1E293B]"}`}>
+                          {isPending ? <AlertCircle size={13} className="text-orange-500" /> : <CheckCircle2 size={13} className="text-emerald-500" />}
+                          <span>{customer.kyc}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#1E293B]">
+                          <CheckCircle2 size={13} className="text-emerald-500" />
+                          <span>PAN Verified</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 border-[#E2E8F0] text-[11px] font-bold text-[#1E293B] lg:border-l lg:pl-4">
+                        <CheckCircle2 size={13} className={isPending ? "text-orange-500" : "text-emerald-500"} />
+                        <span>Bureau {customer.bureau}</span>
+                      </div>
+
+                      <div className="border-[#E2E8F0] lg:border-l lg:pl-4">
+                        <p className="text-[11px] font-bold text-[#475569]">Income</p>
+                        <p className="mt-0.5 text-xs font-extrabold text-[#0F172A]">{customer.income}</p>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="flex h-8 items-center justify-center gap-1.5 rounded-lg border border-[#CBD5E1] bg-white px-3 text-[11px] font-extrabold text-[#5F39F8] transition-all hover:bg-[#F8FAFC] cursor-pointer"
+                      >
+                        <span>View Customer 360</span>
+                        <ChevronRight size={13} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-3 flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-xs font-semibold text-orange-700">
+                <AlertCircle size={16} className="shrink-0 text-orange-500" />
+                <span>1 customer has pending KYC. Complete verification before sending the application for final approval.</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 border-t border-[#F1F5F9] px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs font-semibold text-[#475569]">
+                Application {formatDisplayedApplicationId(appData.application_id || appData.lapp_id || "APP1001")}  •  {appData.loan_product || "Personal Loan"}  •  {fmt(appData.loan_amount_requested) !== "—" ? fmt(appData.loan_amount_requested) : "₹4,50,000"}
+              </p>
+              <button
+                type="button"
+                onClick={() => setIsCustomersModalOpen(false)}
+                className="h-8 rounded-lg border border-[#CBD5E1] bg-white px-5 text-xs font-extrabold text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isAssignModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/18 px-4 py-6 backdrop-blur-[1px]">

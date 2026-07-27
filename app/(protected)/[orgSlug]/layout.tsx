@@ -272,6 +272,7 @@ export default function ProtectedLayout({
 
   const currentOrgName = "LOS360";
   const brandLogo = "/images/LOS360-logo.png";
+  const compactBrandLogo = "/favicon.png";
 
   // Breadcrumb dynamic title
   let breadcrumbTitle = "Applications";
@@ -293,18 +294,27 @@ export default function ProtectedLayout({
       <aside className={`${isSidebarCollapsed ? "w-[76px]" : "w-[252px]"} bg-white border-r border-[#E2E8F0] flex flex-col sticky top-0 h-screen shrink-0 z-20 transition-[width] duration-300 ease-in-out`}>
         {/* Logo area */}
         <div className={`${isSidebarCollapsed ? "px-3 justify-center" : "px-5 justify-between"} h-[70px] border-b border-[#E2E8F0] flex items-center transition-all duration-300`}>
-          <Link href={`/${orgSlug}/dashboard`} className={`${isSidebarCollapsed ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100"} flex min-w-0 items-center gap-2.5 overflow-hidden decoration-transparent transition-all duration-200`}>
-            <Image src={brandLogo} alt={currentOrgName} width={130} height={32} className="h-8 max-w-[130px] object-contain" priority />
+          <Link href={`/${orgSlug}/dashboard`} className={`${isSidebarCollapsed ? "h-11 w-11 justify-center rounded-xl" : "w-auto justify-start"} flex min-w-0 items-center gap-2.5 overflow-hidden decoration-transparent transition-all duration-200`}>
+            <Image
+              src={isSidebarCollapsed ? compactBrandLogo : brandLogo}
+              alt={currentOrgName}
+              width={isSidebarCollapsed ? 36 : 130}
+              height={isSidebarCollapsed ? 36 : 32}
+              className={isSidebarCollapsed ? "h-9 w-9 object-contain" : "h-8 max-w-[130px] object-contain"}
+              priority
+            />
           </Link>
-          <button
-            type="button"
-            onClick={() => setIsSidebarCollapsed((prev) => !prev)}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#64748B] transition-all hover:bg-[#F8FAFC] hover:text-[#1E293B] cursor-pointer"
-            title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <Menu size={20} className={`transition-transform duration-300 ${isSidebarCollapsed ? "rotate-180" : ""}`} />
-          </button>
+          {!isSidebarCollapsed && (
+            <button
+              type="button"
+              onClick={() => setIsSidebarCollapsed((prev) => !prev)}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#64748B] transition-all hover:bg-[#F8FAFC] hover:text-[#1E293B] cursor-pointer"
+              title="Collapse sidebar"
+              aria-label="Collapse sidebar"
+            >
+              <Menu size={20} className="transition-transform duration-300" />
+            </button>
+          )}
         </div>
 
         {/* Navigation list */}

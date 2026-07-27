@@ -11,6 +11,7 @@ import {
 import Modal from "@/app/_components/ui/Modal";
 import { orgs, OrgSlug } from "@/app/_config/orgs";
 import { get } from "@/app/_lib/redux/services/apiClient";
+import { formatDisplayedApplicationId } from "@/app/_lib/applicationId";
 import {
   Search,
   ChevronDown,
@@ -28,20 +29,7 @@ import {
 } from "lucide-react";
 
 
-const formatAppId = (lappId: any, loanProduct: string) => {
-  const p = (loanProduct || "").toLowerCase();
-  let prefix = "APP";
-  if (p.includes("home")) prefix = "HL";
-  else if (p.includes("personal")) prefix = "PL";
-  else if (p.includes("business")) prefix = "BL";
-  else if (p.includes("vehicle")) prefix = "VL";
-  else if (p.includes("gold")) prefix = "GL";
-  else if (p.includes("education")) prefix = "EL";
-  
-  const strId = String(lappId);
-  const padded = strId.padStart(8, '0');
-  return `${prefix}${padded}`;
-};
+const formatAppId = (lappId: any, _loanProduct?: string) => formatDisplayedApplicationId(lappId);
 
 const formatTableDate = (dateStr: any) => {
   if (!dateStr) return "—";

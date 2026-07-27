@@ -22,6 +22,8 @@ export default function JourneyLayout({
   const journeyType = getJourneyTypeFromRouteParam(routeJourneyType);
   const org = orgs[orgSlug];
   const journeyDef = journeyType ? journeys[orgSlug]?.[journeyType] : null;
+  const poweredByLogo = "/assets/iFlow.png";
+  const poweredByName = "LoanTap iFlow";
 
   // 1. Initialize config on mount
   useEffect(() => {
@@ -129,12 +131,12 @@ export default function JourneyLayout({
             <span>Proudly Powered by</span>
             <span className="relative inline-flex h-7 w-[112px] overflow-hidden rounded bg-white shadow-sm ring-1 ring-white/10">
               <Image
-                src={org?.assets?.logo || "/assets/orgs/cosmos/cosmos-logo.png"}
-                alt={org?.name || "Cosmos Bank"}
+                src={poweredByLogo}
+                alt={poweredByName}
                 width={1920}
                 height={1080}
                 sizes="84px"
-                className="absolute left-0 top-1/2 h-auto w-full max-w-none -translate-y-1/2"
+                className="absolute left-1/2 top-1/2 h-[34px] w-[136px] max-w-none -translate-x-1/2 -translate-y-1/2 object-contain"
               />
             </span>
           </div>

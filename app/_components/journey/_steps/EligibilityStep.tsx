@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAppSelector, useAppDispatch } from "../../../_lib/redux/hooks";
 import { 
   updateFormData as updateFormDataAction, 
@@ -24,6 +24,7 @@ import {
   clearDocumentDrafts,
 } from "../../../_lib/documentDraftStorage";
 import { clearJourneyDraft } from "../../../_lib/journeyDraft";
+import { formatApplicationId } from "../../../_lib/applicationId";
 import {
   getJourneyOfferReachedKey,
   getJourneySessionKey,
@@ -292,6 +293,7 @@ const getUploadDocumentMeta = (key: string, selectedType?: string) => {
 
 export default function EligibilityStep() {
   const pathname = usePathname() || "";
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const {
     config,
@@ -797,9 +799,32 @@ export default function EligibilityStep() {
     }
   };
 
+  const handleStartNewApplication = () => {
+    localStorage.removeItem(storageKey);
+    localStorage.removeItem(offerReachedKey);
+    sessionStorage.removeItem(sessionKey);
+    sessionStorage.removeItem(`${storageKey}_session_active`);
+    clearJourneyDraft(loanType);
+    clearDocumentDrafts(documentDraftKey).catch((err) => {
+      console.warn("Failed to clear document drafts", err);
+    });
+
+    setSubmitted(false);
+    setResponseId("");
+    setUploads({});
+    setErrors({});
+    dispatch(resetJourneyAction());
+
+    const restartPath = pathname || window.location.pathname;
+    router.replace(restartPath);
+    window.setTimeout(() => {
+      window.location.reload();
+    }, 180);
+  };
+
   /* ── Success screen ── */
   if (isSubmitted) {
-    const appId = responseId || formData.application_id || "COSWEB" + Math.floor(1000000000 + Math.random() * 9000000000).toString();
+    const appId = responseId || formData.application_id || formatApplicationId();
 
     return (
       <StepCard noHeader>
@@ -859,17 +884,7 @@ export default function EligibilityStep() {
             </button>
 
             <button
-              onClick={() => {
-                localStorage.removeItem(storageKey);
-                localStorage.removeItem(offerReachedKey);
-                sessionStorage.removeItem(sessionKey);
-                sessionStorage.removeItem(`${storageKey}_session_active`);
-                clearJourneyDraft(loanType);
-                clearDocumentDrafts(documentDraftKey).catch((err) => {
-                  console.warn("Failed to clear document drafts", err);
-                });
-                dispatch(resetJourneyAction());
-              }}
+              onClick={handleStartNewApplication}
               className="text-xs font-semibold text-gray-400 hover:text-gray-600 hover:underline"
             >
               Start New Application

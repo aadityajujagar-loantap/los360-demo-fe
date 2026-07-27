@@ -1,3 +1,5 @@
+import { formatApplicationId } from "./applicationId";
+
 const MOCK_TOKEN = "dummy-sadmin-token";
 const AUTH_USER = "SADMIN";
 const AUTH_PASSWORD = "SuperAdmin@123";
@@ -589,7 +591,7 @@ export async function handleMockRequest(endpoint: string, method: Method = "GET"
   if (path === "/master-values/dropdown") return json({ data: store.masterValues.filter((item) => !query.get("call_type") || item.call_type === query.get("call_type")) });
 
   if (path === "/v1/loan/process-step") {
-    const applicationId = body?.application_id || body?.payload?.application_id || String(Date.now()).slice(-6);
+    const applicationId = body?.application_id || body?.payload?.application_id || formatApplicationId();
     return json({ status: "success", message: "Dummy journey step saved.", data: { application_id: applicationId, otp_reference_id: "DUMMY-OTP", eligible: true, sanction_amount: 450000, eligible_roi: "11.25", eligible_emi: 9825, eligible_tenure: 60 } });
   }
   if (path.match(/^\/v1\/loan\/applications\/[^/]+$/)) {
