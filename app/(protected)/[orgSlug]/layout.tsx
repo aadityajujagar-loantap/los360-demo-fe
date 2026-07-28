@@ -235,6 +235,13 @@ export default function ProtectedLayout({
       module: "loan-products",
       alwaysShow: false,
     },
+    {
+      href: `/${orgSlug}/loan-details`,
+      icon: <ClipboardList size={18} />,
+      label: "Loan Details",
+      module: "reports",
+      alwaysShow: true,
+    },
   ];
 
   // RBAC filter logic
@@ -259,14 +266,25 @@ export default function ProtectedLayout({
     });
   })();
 
+  const normalizePath = (value: string) => {
+    const cleanPath = (value.split("?")[0] || "/").replace(/\/+$/, "") || "/";
+    const orgPrefix = `/${orgSlug}`;
+    if (cleanPath === orgPrefix) return "/";
+    if (cleanPath.startsWith(`${orgPrefix}/`)) {
+      return cleanPath.slice(orgPrefix.length) || "/";
+    }
+    return cleanPath;
+  };
+
   const isActive = (href: string) => {
-    if (!pathname) return false;
-    const hrefWithoutSlug = href.replace(`/${orgSlug}`, "") || "/";
+    if (!pathname || !href) return false;
+    const currentPath = normalizePath(pathname);
+    const targetPath = normalizePath(href);
     return (
       pathname === href ||
       pathname.startsWith(`${href}/`) ||
-      pathname === hrefWithoutSlug ||
-      pathname.startsWith(`${hrefWithoutSlug}/`)
+      currentPath === targetPath ||
+      currentPath.startsWith(`${targetPath}/`)
     );
   };
 
@@ -277,6 +295,7 @@ export default function ProtectedLayout({
   // Breadcrumb dynamic title
   let breadcrumbTitle = "Applications";
   if (pathname.includes("/dashboard")) breadcrumbTitle = "Dashboard";
+  else if (pathname.includes("/loan-details")) breadcrumbTitle = "Loan Details";
   else if (pathname.includes("/users")) breadcrumbTitle = "Users";
   else if (pathname.includes("/roles")) breadcrumbTitle = "Roles";
   else if (pathname.includes("/permissions")) breadcrumbTitle = "Permissions";

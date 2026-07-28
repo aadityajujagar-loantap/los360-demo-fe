@@ -30,7 +30,7 @@ export default function ApplicationDetailsPage() {
   const [communicationPanel, setCommunicationPanel] = useState<CommunicationPanel>("communication");
   const [selectedCoappIndex, setSelectedCoappIndex] = useState(0);
   const [coappSubTab, setCoappSubTab] = useState<"co-applicant" | "guarantor">("co-applicant");
-  const [isAddingCoapp, setIsAddingCoapp] = useState(false);
+  const [isAddingCoapp, setIsAddingCoapp] = useState(true);
   const [coappForm, setCoappForm] = useState({
     firstName: "",
     middleName: "",
@@ -51,6 +51,15 @@ export default function ApplicationDetailsPage() {
     state: "",
     city: ""
   });
+
+  useEffect(() => {
+    if (activeTab !== "Co-Applicants") return;
+    setIsAddingCoapp(true);
+    setCoappForm((prev) => ({
+      ...prev,
+      relationship: coappSubTab === "co-applicant" ? "Co-borrower" : "Guarantor",
+    }));
+  }, [activeTab, coappSubTab]);
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
 
   const [appData, setAppData] = useState<any>(null);
@@ -1007,12 +1016,12 @@ export default function ApplicationDetailsPage() {
   const subTabLabels: Partial<Record<Tab, string>> = {
     "Customer Profile": "Customer",
     "Contact & Address": "Contacts",
-    "Co-Applicants": "Co-Applicants / Guarantors",
+    "Co-Applicants": "Obligors",
     "Identity & KYC": "KYC",
     "Employment / Business": "Occupation",
     "Financial Profile": "Financial",
     "Banking Details": "Banking",
-    "Fraud & Compliance": "Complience",
+    "Fraud & Compliance": "Compliance",
   };
   const getSubTabLabel = (tab: Tab) => subTabLabels[tab] ?? tab;
   const communicationPanelTabs: Array<{ id: CommunicationPanel; label: string; helper: string; count: string; icon: React.ElementType }> = [
@@ -1187,7 +1196,7 @@ export default function ApplicationDetailsPage() {
           <div>
             <div className="text-[10px] font-bold text-[#64748B]">Application ID</div>
             <div className="flex items-center gap-2 mt-1.5">
-              <span className="text-lg font-extrabold leading-none text-[#111827]">{formatDisplayedApplicationId(appData.lapp_id)}</span>
+              <span className="text-md font-extrabold leading-none text-[#111827]">{formatDisplayedApplicationId(appData.lapp_id)}</span>
               <button 
                 onClick={() => {
                   navigator.clipboard.writeText(formatDisplayedApplicationId(appData.lapp_id));
@@ -2023,7 +2032,13 @@ export default function ApplicationDetailsPage() {
                   <div>
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-2">
                       <h3 className="text-sm font-bold text-[#1E293B]">Loan Product & Key Parameters</h3>
-                      <button className="h-8 px-3 border border-[#E2E8F0] hover:bg-slate-50 text-xs font-bold text-[#475569] bg-white rounded-lg flex items-center justify-center cursor-pointer transition-all shadow-xs">
+                      <button
+                        onClick={() => {
+                          const loanDetailsApplicationId = appData.application_id || appData.lapp_id || id;
+                          router.push(`/${orgSlug}/loan-details?applicationId=${encodeURIComponent(String(loanDetailsApplicationId))}`);
+                        }}
+                        className="h-8 px-3 border border-[#E2E8F0] hover:bg-slate-50 text-xs font-bold text-[#475569] bg-white rounded-lg flex items-center justify-center cursor-pointer transition-all shadow-xs"
+                      >
                         View Loan Details
                       </button>
                     </div>
@@ -2825,7 +2840,11 @@ export default function ApplicationDetailsPage() {
                     onClick={() => {
                       setCoappSubTab("co-applicant");
                       setSelectedCoappIndex(0);
-                      setIsAddingCoapp(false);
+                      setIsAddingCoapp(true);
+                      setCoappForm(prev => ({
+                        ...prev,
+                        relationship: "Co-borrower"
+                      }));
                     }}
                     className={`flex-1 py-1.5 text-[11px] font-bold rounded-md transition-all cursor-pointer border-none
                       ${coappSubTab === "co-applicant"
@@ -2839,7 +2858,11 @@ export default function ApplicationDetailsPage() {
                     onClick={() => {
                       setCoappSubTab("guarantor");
                       setSelectedCoappIndex(0);
-                      setIsAddingCoapp(false);
+                      setIsAddingCoapp(true);
+                      setCoappForm(prev => ({
+                        ...prev,
+                        relationship: "Guarantor"
+                      }));
                     }}
                     className={`flex-1 py-1.5 text-[11px] font-bold rounded-md transition-all cursor-pointer border-none
                       ${coappSubTab === "guarantor"
@@ -2875,18 +2898,9 @@ export default function ApplicationDetailsPage() {
                             <div className="text-[11px] font-bold text-slate-400 select-none">
                               No {coappSubTab === "co-applicant" ? "Co-applicants" : "Guarantors"} Yet
                             </div>
-                            <button 
-                              onClick={() => {
-                                setIsAddingCoapp(true);
-                                setCoappForm(prev => ({
-                                  ...prev,
-                                  relationship: coappSubTab === "co-applicant" ? "Co-borrower" : "Guarantor"
-                                }));
-                              }}
-                              className="text-[10px] font-bold text-[#5F39F8] hover:underline cursor-pointer bg-transparent border-none mt-1"
-                            >
-                              Create First Entry
-                            </button>
+                            <div className="text-[10px] font-bold text-[#5F39F8] mt-1">
+                              Fill the form on the right to create one.
+                            </div>
                           </div>
                         </div>
                       );
@@ -7574,7 +7588,7 @@ export default function ApplicationDetailsPage() {
                   return (
                     <div
                       key={customer.customerId}
-                      className={`grid grid-cols-1 gap-3 rounded-lg border border-[#DDE5F0] border-l-4 ${accent.rail} bg-white p-3 shadow-sm lg:grid-cols-[minmax(240px,1.5fr)_minmax(128px,0.72fr)_minmax(112px,0.62fr)_minmax(110px,0.58fr)_146px] lg:items-center`}
+                      className={`grid grid-cols-1 gap-3 rounded-lg border border-[#DDE5F0] border-l-4 ${accent.rail} bg-white p-3 shadow-sm lg:grid-cols-[minmax(240px,1.5fr)_minmax(128px,0.72fr)_minmax(112px,0.62fr)_minmax(110px,0.58fr)_168px] lg:items-center`}
                     >
                       <div className="flex min-w-0 items-center gap-3">
                         <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-extrabold ${accent.avatar}`}>
@@ -7615,9 +7629,9 @@ export default function ApplicationDetailsPage() {
 
                       <button
                         type="button"
-                        className="flex h-8 items-center justify-center gap-1.5 rounded-lg border border-[#CBD5E1] bg-white px-3 text-[11px] font-extrabold text-[#5F39F8] transition-all hover:bg-[#F8FAFC] cursor-pointer"
+                        className="flex h-8 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-[#CBD5E1] bg-white px-3 text-[11px] font-extrabold text-[#5F39F8] transition-all hover:bg-[#F8FAFC] cursor-pointer"
                       >
-                        <span>View Customer 360</span>
+                        <span className="whitespace-nowrap">View Customer 360</span>
                         <ChevronRight size={13} />
                       </button>
                     </div>
@@ -7648,48 +7662,48 @@ export default function ApplicationDetailsPage() {
       )}
 
       {isAssignModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/18 px-4 py-6 backdrop-blur-[1px]">
-          <div className="w-full max-w-[680px] overflow-hidden rounded-xl border border-[#E2E8F0] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.18)]">
-            <div className="flex items-start justify-between px-6 pt-5 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/18 px-3 py-4 backdrop-blur-[1px]">
+          <div className="w-full max-w-[600px] overflow-hidden rounded-xl border border-[#E2E8F0] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.18)]">
+            <div className="flex items-start justify-between px-5 py-3">
               <div>
-                <h3 className="text-base font-extrabold text-[#0F172A]">Assign To</h3>
-                <p className="mt-2 text-xs font-medium text-[#64748B]">
+                <h3 className="text-sm font-extrabold text-[#0F172A]">Assign To</h3>
+                <p className="mt-1 text-[11px] font-medium text-[#64748B]">
                   Select a user or team to assign this application. They will be responsible for the next actions.
                 </p>
               </div>
               <button
                 onClick={() => setIsAssignModalOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-xl leading-none text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-lg leading-none text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
                 aria-label="Close assign modal"
               >
                 ×
               </button>
             </div>
 
-            <div className="px-6 pb-5 pt-2">
-              <div className="grid grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-3">
-                <div className="space-y-2">
+            <div className="px-5 pb-4 pt-1">
+              <div className="grid grid-cols-1 gap-x-3 gap-y-2 md:grid-cols-3">
+                <div className="space-y-1.5">
                   <label className="text-xs font-bold text-[#1E2A5A]">
                     Assigned To <span className="text-rose-500">*</span>
                   </label>
-                  <div className="grid h-10 grid-cols-2 overflow-hidden rounded-lg border border-[#D7DEE9] bg-white">
-                    <label className="flex cursor-pointer items-center gap-2 border-r border-[#E2E8F0] px-3 text-xs font-bold text-[#1E293B]">
-                      <input type="radio" name="assignTarget" defaultChecked className="h-4 w-4 accent-[#5F39F8]" />
+                  <div className="grid h-9 grid-cols-2 overflow-hidden rounded-lg border border-[#D7DEE9] bg-white">
+                    <label className="flex cursor-pointer items-center gap-1.5 border-r border-[#E2E8F0] px-2.5 text-[11px] font-bold text-[#1E293B]">
+                      <input type="radio" name="assignTarget" defaultChecked className="h-3.5 w-3.5 accent-[#5F39F8]" />
                       <span>User</span>
                     </label>
-                    <label className="flex cursor-pointer items-center gap-2 px-3 text-xs font-bold text-[#475569]">
-                      <input type="radio" name="assignTarget" className="h-4 w-4 accent-[#5F39F8]" />
+                    <label className="flex cursor-pointer items-center gap-1.5 px-2.5 text-[11px] font-bold text-[#475569]">
+                      <input type="radio" name="assignTarget" className="h-3.5 w-3.5 accent-[#5F39F8]" />
                       <span>Team</span>
                     </label>
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label className="text-xs font-bold text-[#1E2A5A]">
                     Select Dept <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
-                    <select className="h-10 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white px-3 pr-9 text-xs font-semibold text-[#475569] outline-none transition-colors focus:border-[#5F39F8]">
+                    <select className="h-9 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white px-3 pr-8 text-xs font-semibold text-[#475569] outline-none transition-colors focus:border-[#5F39F8]">
                       <option>Credit Department</option>
                       <option>Operations</option>
                       <option>Risk Team</option>
@@ -7699,7 +7713,7 @@ export default function ApplicationDetailsPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label className="text-xs font-bold text-[#1E2A5A]">
                     Search Users <span className="text-rose-500">*</span>
                   </label>
@@ -7708,17 +7722,17 @@ export default function ApplicationDetailsPage() {
                     <input
                       type="text"
                       placeholder="Search and select user"
-                      className="h-10 w-full rounded-lg border border-[#D7DEE9] bg-white px-9 text-xs font-semibold text-[#1E293B] outline-none transition-colors placeholder:text-[#64748B] focus:border-[#5F39F8]"
+                      className="h-9 w-full rounded-lg border border-[#D7DEE9] bg-white px-9 text-xs font-semibold text-[#1E293B] outline-none transition-colors placeholder:text-[#64748B] focus:border-[#5F39F8]"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label className="text-xs font-bold text-[#1E2A5A]">
                     Priority <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
-                    <select className="h-10 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white pl-7 pr-9 text-xs font-semibold text-[#1E293B] outline-none transition-colors focus:border-[#5F39F8]">
+                    <select className="h-9 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white pl-7 pr-8 text-xs font-semibold text-[#1E293B] outline-none transition-colors focus:border-[#5F39F8]">
                       <option>High</option>
                       <option>Medium</option>
                       <option>Low</option>
@@ -7728,35 +7742,35 @@ export default function ApplicationDetailsPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-1.5 md:col-span-2">
                   <label className="text-xs font-bold text-[#1E2A5A]">Remarks</label>
                   <div className="relative">
                     <textarea
                       placeholder="Enter remarks"
                       maxLength={500}
-                      className="h-[86px] w-full resize-none rounded-lg border border-[#D7DEE9] bg-white px-3 py-3 text-xs font-semibold text-[#1E293B] outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#5F39F8]"
+                      className="h-[66px] w-full resize-none rounded-lg border border-[#D7DEE9] bg-white px-3 py-2 text-xs font-semibold text-[#1E293B] outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#5F39F8]"
                     />
                     <span className="absolute bottom-2 right-3 text-[10px] font-bold text-[#64748B]">0 / 500</span>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-5 flex items-center gap-2 rounded-md bg-[#F1F3FF] px-3 py-3 text-xs font-semibold text-[#2536D8]">
+              <div className="mt-3 flex items-center gap-2 rounded-md bg-[#F1F3FF] px-3 py-2 text-[11px] font-semibold text-[#2536D8]">
                 <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[#2536D8] text-[10px] font-black">i</span>
                 <span>The selected user will be notified and can take action on this application.</span>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 border-t border-[#F1F5F9] px-6 py-4">
+            <div className="flex items-center justify-end gap-2 border-t border-[#F1F5F9] px-5 py-2.5">
               <button
                 onClick={() => setIsAssignModalOpen(false)}
-                className="h-9 min-w-[148px] rounded-md border border-[#D7DEE9] bg-white px-5 text-xs font-extrabold text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
+                className="h-8 min-w-[120px] rounded-md border border-[#D7DEE9] bg-white px-4 text-[11px] font-extrabold text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={() => setIsAssignModalOpen(false)}
-                className="h-9 min-w-[148px] rounded-md bg-[#5F18F6] px-5 text-xs font-extrabold text-white shadow-sm transition-all hover:bg-[#4F0EDB] cursor-pointer"
+                className="h-8 min-w-[120px] rounded-md bg-[#5F18F6] px-4 text-[11px] font-extrabold text-white shadow-sm transition-all hover:bg-[#4F0EDB] cursor-pointer"
               >
                 Assign
               </button>

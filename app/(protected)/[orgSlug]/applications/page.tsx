@@ -681,38 +681,38 @@ export default function ApplicationsPage() {
       {/* Documents Modal */}
       {isAssignModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/18 px-3 py-4 backdrop-blur-[1px]">
-          <div className="flex max-h-[92vh] w-full max-w-[1080px] flex-col overflow-hidden rounded-xl border border-[#DDE4EF] bg-white shadow-[0_22px_70px_rgba(15,23,42,0.2)]">
-            <div className="flex items-start justify-between px-5 py-4 sm:px-6">
+          <div className="flex max-h-[88vh] w-full max-w-[960px] flex-col overflow-hidden rounded-xl border border-[#DDE4EF] bg-white shadow-[0_22px_70px_rgba(15,23,42,0.2)]">
+            <div className="flex items-start justify-between px-5 py-3">
               <div className="min-w-0">
-                <h3 className="text-base font-extrabold text-[#0F172A]">Assign to Team</h3>
-                <p className="mt-1.5 text-xs font-medium leading-relaxed text-[#64748B]">
+                <h3 className="text-sm font-extrabold text-[#0F172A]">Assign to Team</h3>
+                <p className="mt-1 text-[11px] font-medium leading-relaxed text-[#64748B]">
                   Select a team or work queue to assign {assignApp ? formatAppId(assignApp.lapp_id, assignApp.loan_product) : "this application"}. They will be responsible for the next actions.
                 </p>
               </div>
               <button
                 onClick={() => setIsAssignModalOpen(false)}
-                className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xl leading-none text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
+                className="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-lg leading-none text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
                 aria-label="Close assign modal"
               >
                 ×
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-4 sm:px-6">
-              <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_230px]">
-                <div className="min-w-0 space-y-4">
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-3 sm:px-5">
+              <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_200px]">
+                <div className="min-w-0 space-y-3">
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-[#1E2A5A]">
                         Assign To <span className="text-rose-500">*</span>
                       </label>
-                      <div className="grid h-9 grid-cols-2 overflow-hidden rounded-lg border border-[#D7DEE9] bg-white">
-                        <label className="flex cursor-pointer items-center gap-2 border-r border-[#E2E8F0] px-3 text-xs font-bold text-[#475569]">
-                          <input type="radio" name="listAssignTarget" className="h-4 w-4 accent-[#5F39F8]" />
+                      <div className="grid h-8 grid-cols-2 overflow-hidden rounded-lg border border-[#D7DEE9] bg-white">
+                        <label className="flex cursor-pointer items-center gap-1.5 border-r border-[#E2E8F0] px-2.5 text-[11px] font-bold text-[#475569]">
+                          <input type="radio" name="listAssignTarget" className="h-3.5 w-3.5 accent-[#5F39F8]" />
                           <span>User</span>
                         </label>
-                        <label className="flex cursor-pointer items-center gap-2 px-3 text-xs font-bold text-[#1E293B]">
-                          <input type="radio" name="listAssignTarget" defaultChecked className="h-4 w-4 accent-[#5F39F8]" />
+                        <label className="flex cursor-pointer items-center gap-1.5 px-2.5 text-[11px] font-bold text-[#1E293B]">
+                          <input type="radio" name="listAssignTarget" defaultChecked className="h-3.5 w-3.5 accent-[#5F39F8]" />
                           <span>Team</span>
                         </label>
                       </div>
@@ -729,7 +729,7 @@ export default function ApplicationsPage() {
                         </label>
                         <div className="relative">
                           {field.dot && <span className="pointer-events-none absolute left-3 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-orange-500" />}
-                          <select className={`h-9 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white pr-8 text-xs font-semibold text-[#1E293B] outline-none transition-colors focus:border-[#5F39F8] ${field.dot ? "pl-7" : "pl-3"}`}>
+                          <select className={`h-8 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white pr-8 text-[11px] font-semibold text-[#1E293B] outline-none transition-colors focus:border-[#5F39F8] ${field.dot ? "pl-7" : "pl-3"}`}>
                             {field.options.map((option) => (
                               <option key={option}>{option}</option>
                             ))}
@@ -740,13 +740,13 @@ export default function ApplicationsPage() {
                     ))}
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-[#1E2A5A]">
                         Current Stage <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
-                        <select className="h-9 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white px-3 pr-8 text-xs font-semibold text-[#1E293B] outline-none transition-colors focus:border-[#5F39F8]">
+                        <select className="h-8 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white px-3 pr-8 text-[11px] font-semibold text-[#1E293B] outline-none transition-colors focus:border-[#5F39F8]">
                           <option>Credit Assessment</option>
                           <option>Document Verification</option>
                           <option>Underwriting</option>
@@ -759,7 +759,7 @@ export default function ApplicationsPage() {
                         Next Stage <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
-                        <select className="h-9 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white px-3 pr-8 text-xs font-semibold text-[#1E293B] outline-none transition-colors focus:border-[#5F39F8]">
+                        <select className="h-8 w-full appearance-none rounded-lg border border-[#D7DEE9] bg-white px-3 pr-8 text-[11px] font-semibold text-[#1E293B] outline-none transition-colors focus:border-[#5F39F8]">
                           <option>Underwriting</option>
                           <option>Credit Committee</option>
                           <option>Sanction</option>
@@ -769,13 +769,13 @@ export default function ApplicationsPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-3 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-3 text-xs md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-3 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-2.5 text-[11px] md:grid-cols-2">
                     <div>
                       <div className="font-extrabold text-[#1E2A5A]">SLA (Auto)</div>
                       <div className="mt-2 text-[10px] font-bold text-[#64748B]">Target Completion</div>
                       <div className="mt-1 font-extrabold text-[#0F172A]">24 Hours</div>
                     </div>
-                    <div className="md:border-l md:border-[#E2E8F0] md:pl-5">
+                    <div className="md:border-l md:border-[#E2E8F0] md:pl-4">
                       <div className="text-[10px] font-bold text-[#64748B]">Due Date</div>
                       <div className="mt-1 flex items-center gap-2 font-extrabold text-[#0F172A]">
                         <Calendar size={13} className="text-[#64748B]" />
@@ -787,14 +787,14 @@ export default function ApplicationsPage() {
                   <div className="space-y-2">
                     <div className="text-xs font-bold text-[#1E2A5A]">Team Members (Read Only)</div>
                     <div className="overflow-x-auto rounded-lg border border-[#D7DEE9]">
-                      <table className="min-w-[620px] w-full text-left text-[11px]">
+                      <table className="min-w-[540px] w-full text-left text-[10px]">
                         <thead className="bg-[#F8FAFC] text-[#64748B]">
                           <tr>
-                            <th className="px-3 py-2 font-extrabold">Member</th>
-                            <th className="px-3 py-2 font-extrabold">Role</th>
-                            <th className="px-3 py-2 font-extrabold">Workload</th>
-                            <th className="px-3 py-2 font-extrabold">Availability</th>
-                            <th className="px-3 py-2 font-extrabold">Status</th>
+                            <th className="px-2.5 py-1.5 font-extrabold">Member</th>
+                            <th className="px-2.5 py-1.5 font-extrabold">Role</th>
+                            <th className="px-2.5 py-1.5 font-extrabold">Workload</th>
+                            <th className="px-2.5 py-1.5 font-extrabold">Availability</th>
+                            <th className="px-2.5 py-1.5 font-extrabold">Status</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-[#EEF2F7] font-semibold text-[#1E293B]">
@@ -805,16 +805,16 @@ export default function ApplicationsPage() {
                             ["Rajesh Gupta", "Underwriter", "23", "On Leave", "Active"],
                           ].map(([member, role, workload, availability, status]) => (
                             <tr key={member}>
-                              <td className="px-3 py-2">{member}</td>
-                              <td className="px-3 py-2 text-[#475569]">{role}</td>
-                              <td className="px-3 py-2">{workload}</td>
-                              <td className="px-3 py-2">
+                              <td className="px-2.5 py-1.5">{member}</td>
+                              <td className="px-2.5 py-1.5 text-[#475569]">{role}</td>
+                              <td className="px-2.5 py-1.5">{workload}</td>
+                              <td className="px-2.5 py-1.5">
                                 <span className={`inline-flex items-center gap-1 ${availability === "Busy" ? "text-orange-600" : availability === "On Leave" ? "text-slate-500" : "text-emerald-600"}`}>
                                   <span className={`h-1.5 w-1.5 rounded-full ${availability === "Busy" ? "bg-orange-500" : availability === "On Leave" ? "bg-slate-400" : "bg-emerald-500"}`} />
                                   {availability}
                                 </span>
                               </td>
-                              <td className="px-3 py-2 text-emerald-600">{status}</td>
+                              <td className="px-2.5 py-1.5 text-emerald-600">{status}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -823,14 +823,14 @@ export default function ApplicationsPage() {
                   </div>
 
                   <label className="flex items-center gap-2 text-xs font-semibold text-[#1E2A5A]">
-                    <input type="checkbox" defaultChecked className="h-4 w-4 rounded accent-[#5F39F8]" />
+                    <input type="checkbox" defaultChecked className="h-3.5 w-3.5 rounded accent-[#5F39F8]" />
                     Automatically assign to first available member
                   </label>
 
-                  <div className="grid grid-cols-1 gap-3 border-t border-[#EEF2F7] pt-3 text-xs font-semibold text-[#1E2A5A] sm:grid-cols-2 xl:grid-cols-4">
+                  <div className="grid grid-cols-1 gap-2.5 border-t border-[#EEF2F7] pt-2.5 text-[11px] font-semibold text-[#1E2A5A] sm:grid-cols-2 xl:grid-cols-4">
                     {["Notify entire team", "Notify Team Lead", "Create task automatically", "Escalate if SLA breached"].map((item) => (
                       <label key={item} className="flex items-center gap-2">
-                        <input type="checkbox" defaultChecked className="h-4 w-4 rounded accent-[#5F39F8]" />
+                        <input type="checkbox" defaultChecked className="h-3.5 w-3.5 rounded accent-[#5F39F8]" />
                         {item}
                       </label>
                     ))}
@@ -842,13 +842,13 @@ export default function ApplicationsPage() {
                       <textarea
                         placeholder="Enter remarks (optional)"
                         maxLength={500}
-                        className="h-[78px] w-full resize-none rounded-lg border border-[#D7DEE9] bg-white px-3 py-3 text-xs font-semibold text-[#1E293B] outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#5F39F8]"
+                        className="h-[58px] w-full resize-none rounded-lg border border-[#D7DEE9] bg-white px-3 py-2 text-xs font-semibold text-[#1E293B] outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#5F39F8]"
                       />
                       <span className="absolute bottom-2 right-3 text-[10px] font-bold text-[#64748B]">0 / 500</span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-3 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-3 text-xs md:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-3 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-2.5 text-[11px] md:grid-cols-3">
                     <div>
                       <div className="text-[10px] font-bold text-[#64748B]">Current Owner</div>
                       <div className="mt-1 font-extrabold text-[#0F172A]">Credit Assessment Queue</div>
@@ -864,11 +864,11 @@ export default function ApplicationsPage() {
                   </div>
                 </div>
 
-                <aside className="rounded-lg border border-[#D7DEE9] bg-white p-4 lg:sticky lg:top-0 lg:self-start">
-                  <h4 className="text-sm font-extrabold text-[#0F172A]">Team Summary</h4>
-                  <div className="mt-4 text-xs">
+                <aside className="rounded-lg border border-[#D7DEE9] bg-white p-3 lg:sticky lg:top-0 lg:self-start">
+                  <h4 className="text-xs font-extrabold text-[#0F172A]">Team Summary</h4>
+                  <div className="mt-3 text-[11px]">
                     <div className="font-extrabold text-[#1E2A5A]">Credit Underwriting Team</div>
-                    <div className="mt-4 space-y-3">
+                    <div className="mt-3 space-y-2.5">
                       {[
                         ["Members", "12", "text-[#1E2A5A]"],
                         ["Available", "8", "text-emerald-600"],
@@ -885,10 +885,10 @@ export default function ApplicationsPage() {
                     </div>
                   </div>
 
-                  <div className="mt-5 border-t border-[#EEF2F7] pt-4">
+                  <div className="mt-4 border-t border-[#EEF2F7] pt-3">
                     <div className="text-xs font-extrabold text-[#1E2A5A]">Team Lead</div>
-                    <div className="mt-3 flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#EEF2FF] text-xs font-extrabold text-[#5F39F8]">RK</div>
+                    <div className="mt-2.5 flex items-center gap-2.5">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#EEF2FF] text-[11px] font-extrabold text-[#5F39F8]">RK</div>
                       <div>
                         <div className="text-xs font-extrabold text-[#0F172A]">Rahul Kulkarni</div>
                         <div className="text-[10px] font-semibold text-[#64748B]">Credit Manager</div>
@@ -896,7 +896,7 @@ export default function ApplicationsPage() {
                     </div>
                   </div>
 
-                  <div className="mt-5">
+                  <div className="mt-4">
                     <div className="text-xs font-extrabold text-[#1E2A5A]">Skills</div>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {["Home Loan", "LAP", "MSME"].map((skill) => (
@@ -905,23 +905,23 @@ export default function ApplicationsPage() {
                     </div>
                   </div>
 
-                  <button className="mt-6 h-9 w-full rounded-lg border border-[#5F39F8] bg-white text-xs font-extrabold text-[#5F39F8] transition-all hover:bg-indigo-50 cursor-pointer">
+                  <button className="mt-4 h-8 w-full rounded-lg border border-[#5F39F8] bg-white text-[11px] font-extrabold text-[#5F39F8] transition-all hover:bg-indigo-50 cursor-pointer">
                     View Team Dashboard
                   </button>
                 </aside>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 border-t border-[#EEF2F7] px-5 py-3 sm:px-6">
+            <div className="flex items-center justify-end gap-2 border-t border-[#EEF2F7] px-5 py-2.5">
               <button
                 onClick={() => setIsAssignModalOpen(false)}
-                className="h-9 min-w-[130px] rounded-md border border-[#D7DEE9] bg-white px-5 text-xs font-extrabold text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
+                className="h-8 min-w-[112px] rounded-md border border-[#D7DEE9] bg-white px-4 text-[11px] font-extrabold text-[#1E2A5A] transition-all hover:bg-slate-50 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={() => setIsAssignModalOpen(false)}
-                className="h-9 min-w-[150px] rounded-md bg-[#5F18F6] px-5 text-xs font-extrabold text-white shadow-sm transition-all hover:bg-[#4F0EDB] cursor-pointer"
+                className="h-8 min-w-[128px] rounded-md bg-[#5F18F6] px-4 text-[11px] font-extrabold text-white shadow-sm transition-all hover:bg-[#4F0EDB] cursor-pointer"
               >
                 Assign Team
               </button>
